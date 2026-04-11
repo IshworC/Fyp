@@ -4,3 +4,4 @@ backend/uploads/
 backend/.env
 Saan/.env
 desktop.ini
+backend/seedAdmin.js
