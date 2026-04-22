@@ -56,6 +56,7 @@ function UserVenueDetail() {
   const [userRating, setUserRating] = useState(0);
   const [userReview, setUserReview] = useState('');
   const [hasUserRated, setHasUserRated] = useState(false);
+  const [reviewLoading, setReviewLoading] = useState(false);
 
   // Fetch data
   useEffect(() => {
@@ -107,6 +108,44 @@ function UserVenueDetail() {
       setShowErrorPopup(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRatingSubmit = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem('token');
+    if (!token) {
+      setError('Please login to rate this venue');
+      setShowErrorPopup(true);
+      return;
+    }
+    if (userRating === 0) {
+      setError('Please select a rating');
+      setShowErrorPopup(true);
+      return;
+    }
+    
+    setReviewLoading(true);
+    try {
+      const response = await venueAPI.submitVenueReview(token, venueId, {
+        rating: userRating,
+        comment: userReview
+      });
+      
+      if (response.success) {
+        setHasUserRated(true);
+        // Refresh venue data
+        const updatedVenue = await venueAPI.getSingleVenue(venueId);
+        if (updatedVenue.success) setVenue(updatedVenue.venue);
+      } else {
+        setError(response.message || 'Failed to submit review');
+        setShowErrorPopup(true);
+      }
+    } catch (err) {
+      setError('Error submitting review');
+      setShowErrorPopup(true);
+    } finally {
+      setReviewLoading(false);
     }
   };
   const calculateMenuTotal = () => {
@@ -499,6 +538,66 @@ function UserVenueDetail() {
                 {venue.reviews?.length === 0 && <p className="text-center text-gray-400 py-10 font-bold italic">No reviews yet. Be the first to share your experience!</p>}
               </div>
             </div>
+
+            {/* Rating & Review Section */}
+            {!hasUserRated && localStorage.getItem('token') && localStorage.getItem('userRole') === 'user' && (
+              <div className="bg-white rounded-[2.5rem] p-8 sm:p-12 shadow-xl border border-gray-100 mt-8">
+                <h2 className="text-2xl font-black text-gray-900 mb-2">Share Your Experience</h2>
+                <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest mb-8">How was your event at {venue.name}?</p>
+                
+                <form onSubmit={handleRatingSubmit} className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2 mb-2 block">Your Rating</label>
+                    <div className="flex gap-2">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setUserRating(star)}
+                          onMouseEnter={() => setUserRating(star)}
+                          className="transition-transform hover:scale-110"
+                        >
+                          {star <= userRating ? (
+                            <FaStar className="w-10 h-10 text-yellow-400 drop-shadow-sm" />
+                          ) : (
+                            <FaStar className="w-10 h-10 text-gray-100" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-2 block">Your Review</label>
+                    <textarea
+                      value={userReview}
+                      onChange={(e) => setUserReview(e.target.value)}
+                      placeholder="Write about the service, food, and ambiance..."
+                      className="w-full p-6 bg-gray-50 border border-transparent rounded-[2rem] focus:border-purple-800 outline-none font-bold text-sm min-h-[150px] transition"
+                      required
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={reviewLoading}
+                    className="w-full py-5 bg-purple-800 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-purple-900 transition transform hover:-translate-y-1 disabled:bg-gray-200"
+                  >
+                    {reviewLoading ? 'SUBMITTING...' : 'Post My Review'}
+                  </button>
+                </form>
+              </div>
+            )}
+
+            {hasUserRated && (
+              <div className="bg-green-50 border border-green-100 rounded-[2.5rem] p-8 text-center mt-8">
+                <div className="w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                  <FaCheckCircle size={24} />
+                </div>
+                <h3 className="text-xl font-black text-gray-900">Thanks for your feedback!</h3>
+                <p className="text-gray-500 font-bold mt-1 text-sm">Your review has been shared with the venue community.</p>
+              </div>
+            )}
           </div>
 
           {/* Booking Sidebar - Shown only if selections made */}

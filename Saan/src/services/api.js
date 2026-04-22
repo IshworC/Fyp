@@ -171,15 +171,25 @@ export const venueAPI = {
   },
 
   submitVenueReview: async (token, venueId, reviewData) => {
-    const response = await fetch(`${API_URL}/venues/${venueId}/reviews`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(reviewData),
-    });
-    return response.json();
+    try {
+      const response = await fetch(`${API_URL}/venues/${venueId}/reviews`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewData),
+      });
+      
+      const data = await response.json();
+      if (!response.ok) {
+        return { success: false, message: data.message || 'Failed to submit review' };
+      }
+      return data;
+    } catch (err) {
+      console.error('Submit review error:', err);
+      return { success: false, message: err.message || 'Network error' };
+    }
   },
 
   updateVenueGallery: async (token, venueId, data) => {

@@ -126,9 +126,9 @@ function UserHome() {
 
       {/* Hero Section */}
       <div className="relative bg-gradient-to-br from-purple-800 to-purple-700">
-        <div className="absolute inset-0 bg-black opacity-50">
-          <img
-            src="https://i.pinimg.com/1200x/0f/53/0f/0f530fc2d1a3feaef403ca936b218ce5.jpg"
+        <div className="absolute inset-0 bg-black opacity-60">
+       <img
+            src="https://i.pinimg.com/1200x/59/15/74/591574131eda08b6695f320917791637.jpg"
             alt="Background"
             className="w-full h-full object-cover"
           />
@@ -141,7 +141,7 @@ function UserHome() {
               <br />
               <span className="text-yellow-300">For Your Special Event</span>
             </h1>
-            <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-200 mb-10 max-w-2xl mx-auto ">
               Discover and book unique venues for weddings, corporate events, and celebrations
             </p>
 
