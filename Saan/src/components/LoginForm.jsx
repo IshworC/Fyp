@@ -13,7 +13,7 @@ function LoginForm({ onLogin, onSignupClick, isLoading = false, error = "" }) {
 
   return (
     <form onSubmit={handleLogin} className="bg-gray-300 p-10 rounded-lg shadow-xl w-[380px]">
-      <h1 className="text-3xl font-bold text-center text-[#5d0f0f] mb-6">Welcome to SAN</h1>
+      <h1 className="text-3xl font-bold text-center text-purple-800 mb-6">Welcome to SAN</h1>
 
       {error && (
         <div className="bg-red-200 text-red-800 p-3 rounded mb-4 text-sm">
@@ -21,7 +21,7 @@ function LoginForm({ onLogin, onSignupClick, isLoading = false, error = "" }) {
         </div>
       )}
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">Email / Number</label>
+      <label className="block font-semibold text-purple-800 mt-4">Email / Number</label>
       <input
         type="text"
         placeholder="Enter email"
@@ -32,7 +32,7 @@ function LoginForm({ onLogin, onSignupClick, isLoading = false, error = "" }) {
         required
       />
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">Password</label>
+      <label className="block font-semibold text-purple-800 mt-4">Password</label>
       <input
         type="password"
         placeholder="Enter password"
@@ -47,12 +47,12 @@ function LoginForm({ onLogin, onSignupClick, isLoading = false, error = "" }) {
         <label className="flex items-center space-x-1">
           <input type="checkbox" disabled={isLoading} /> <span>Remember password</span>
         </label>
-        <button type="button" className="text-[#5d0f0f] hover:underline" disabled={isLoading}>Forgot password?</button>
+        <button type="button" className="text-purple-800 hover:underline" disabled={isLoading}>Forgot password?</button>
       </div>
 
       <button 
         type="submit" 
-        className="w-full bg-[#5d0f0f] text-white py-2 mt-5 rounded hover:bg-[#4a0c0c] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-purple-800 text-white py-2 mt-5 rounded hover:bg-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={isLoading}
       >
         {isLoading ? "Logging in..." : "Login"}
@@ -62,7 +62,7 @@ function LoginForm({ onLogin, onSignupClick, isLoading = false, error = "" }) {
       <button 
         type="button" 
         onClick={onSignupClick} 
-        className="w-full bg-white text-[#5d0f0f] py-2 mt-2 rounded border hover:bg-gray-100 disabled:opacity-50"
+        className="w-full bg-white text-purple-800 py-2 mt-2 rounded border hover:bg-gray-100 disabled:opacity-50"
         disabled={isLoading}
       >
         Signup

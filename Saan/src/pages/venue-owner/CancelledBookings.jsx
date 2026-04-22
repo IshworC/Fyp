@@ -85,7 +85,6 @@ function CancelledBookings() {
         <p className="text-gray-500 mt-1">View history of cancelled booking requests</p>
       </div>
 
-      {/* Error Message */}
       {error && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
           {error}
@@ -94,7 +93,7 @@ function CancelledBookings() {
 
       {loading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5d0f0f]"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-800"></div>
         </div>
       ) : bookings.length === 0 ? (
         <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-100">
@@ -124,11 +123,11 @@ function CancelledBookings() {
               {/* Booking Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="flex items-center gap-2 text-gray-700">
-                  <FaCalendar className="text-[#5d0f0f]" />
+                  <FaCalendar className="text-purple-800" />
                   <span>{new Date(booking.eventDate).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700">
-                  <FaUsers className="text-[#5d0f0f]" />
+                  <FaUsers className="text-purple-800" />
                   <span>{booking.numberOfGuests} Guests</span>
                 </div>
                 <div className="flex items-center gap-2 text-gray-700">
@@ -161,7 +160,7 @@ function CancelledBookings() {
               <div className="flex gap-3 pt-4 border-t border-current/20">
                 <button
                   onClick={() => setChatUser({ id: booking.user._id, name: booking.user.name })}
-                  className="bg-[#5d0f0f] text-white px-4 py-2 rounded-lg hover:bg-[#4a0c0c] font-medium flex-1"
+                  className="bg-purple-800 text-white px-4 py-2 rounded-lg hover:bg-purple-900 font-medium flex-1"
                 >
                   💬 Chat
                 </button>

@@ -29,6 +29,9 @@ import VenueEventsAndGallery from './pages/venue-owner/VenueEventsAndGallery';
 import VenueOwnerProfile from './pages/venue-owner/VenueOwnerProfile';
 import VenueMenuAndPackageManagement from './pages/venue-owner/VenueMenuAndPackageManagement';
 import EditVenueDetails from './pages/venue-owner/EditVenueDetails';
+import TimelyBookings from './pages/venue-owner/TimelyBookings';
+import BookedBookings from './pages/venue-owner/BookedBookings';
+import VenueCalendar from './pages/venue-owner/VenueCalendar';
 
 // Auth imports
 import UserLogin from './pages/auth/UserLogin';
@@ -187,6 +190,9 @@ function App() {
             <Route path="menu/:venueId" element={<VenueMenuAndPackageManagement />} />
             <Route path="profile" element={<VenueOwnerProfile />} />
             <Route path="edit-venue/:venueId" element={<EditVenueDetails />} />
+            <Route path="timely-booked" element={<TimelyBookings />} />
+            <Route path="booked" element={<BookedBookings />} />
+            <Route path="calendar" element={<VenueCalendar />} />
           </Route>
 
           {/* Redirect /home to / for backwards compatibility */}

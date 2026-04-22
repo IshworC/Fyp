@@ -1,6 +1,21 @@
 // Try to dynamically import `socket.io-client`; fall back to CDN ESM if not installed.
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
-const SOCKET_BASE = API_URL.replace(/\/api\/?$/, '');
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
+export const BASE_URL = API_URL.replace(/\/api\/?$/, '');
+const SOCKET_BASE = BASE_URL;
+
+/**
+ * Get full URL for an image path
+ * @param {string} path - The image path (relative or absolute)
+ * @returns {string} The full URL
+ */
+export const getImageUrl = (path) => {
+  if (!path) return '';
+  if (path.startsWith('http')) return path;
+  // Ensure path starts with /
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  return `${BASE_URL}${normalizedPath}`;
+};
+
 
 let IOlib;
 try {
@@ -182,6 +197,20 @@ export const venueAPI = {
 
 // Booking API calls
 export const bookingAPI = {
+  getPublicBookedDates: async (venueId) => {
+    try {
+      const response = await fetch(`${API_URL}/bookings/venue/${venueId}/booked-dates`);
+      if (!response.ok) {
+        const error = await response.json();
+        return { success: false, message: error.message || 'Failed to fetch booked dates' };
+      }
+      return response.json();
+    } catch (err) {
+      console.error('Get booked dates error:', err);
+      return { success: false, message: err.message };
+    }
+  },
+
   createBooking: async (token, bookingData) => {
     try {
       console.log('Creating booking with token:', token?.substring(0, 20) + '...');
@@ -324,6 +353,29 @@ export const bookingAPI = {
       return response.json();
     } catch (err) {
       console.error('Update booking status error:', err);
+      return { success: false, message: err.message };
+    }
+  },
+
+  createManualBooking: async (token, bookingData) => {
+    try {
+      const response = await fetch(`${API_URL}/bookings/manual`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        return { success: false, message: error.message || 'Failed to create manual booking' };
+      }
+      
+      return response.json();
+    } catch (err) {
+      console.error('Create manual booking error:', err);
       return { success: false, message: err.message };
     }
   },
@@ -946,7 +998,7 @@ export const packageAPI = {
 
 // eSewa Payment API calls
 export const esewaAPI = {
-  initiatePayment: async (token, bookingId, totalAmount) => {
+  initiatePayment: async (token, bookingId, totalAmount, extraData = {}) => {
     try {
       const response = await fetch(`${API_URL}/esewa/initiate`, {
         method: 'POST',
@@ -954,7 +1006,7 @@ export const esewaAPI = {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ bookingId, totalAmount }),
+        body: JSON.stringify({ bookingId, totalAmount, ...extraData }),
       });
       return response.json();
     } catch (err) {

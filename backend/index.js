@@ -27,6 +27,7 @@ import menuRoute from './route/menuRoute.js';
 import packageRoute from './route/packageRoute.js';
 import esewaRoute from './route/esewa.routes.js';
 import createChatRouter from './route/chatRoute.js';
+import initCronJobs from './jobs/cronJob.js';
 
 const app = express();
 
@@ -127,4 +128,7 @@ app.use((error, req, res, next) => {
 server.listen(PORT, () => {
   console.log(`\n🚀 Server is running on http://localhost:${PORT}`);
   console.log(`Environment: ${config.nodeEnv}\n`);
+  
+  // Initialize cron jobs
+  initCronJobs();
 });

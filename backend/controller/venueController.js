@@ -1,6 +1,7 @@
 import Venue from '../models/Venue.js';
 import User from '../models/User.js';
 import Notification from '../models/Notification.js';
+import VenueRegistration from '../models/VenueRegistration.js';
 
 // Create venue (venue owner only)
 export const createVenue = async (req, res) => {
@@ -362,6 +363,22 @@ export const uploadVenueImages = async (req, res) => {
     venue.images = [...(venue.images || []), ...imagePaths];
     await venue.save();
 
+    // Sync with VenueRegistration
+    try {
+      const registration = await VenueRegistration.findOne({ owner: venue.owner });
+      if (registration) {
+        const newVenueImages = imagePaths.map(path => ({
+          url: path,
+          publicId: path.split('/').pop()
+        }));
+        registration.venueImages = [...(registration.venueImages || []), ...newVenueImages];
+        await registration.save();
+      }
+    } catch (syncError) {
+      console.error('Sync to registration error:', syncError);
+      // Don't fail the request if sync fails
+    }
+
     res.status(200).json({
       success: true,
       message: 'Images uploaded successfully',
@@ -408,6 +425,20 @@ export const updateVenueGallery = async (req, res) => {
 
     venue.images = images;
     await venue.save();
+
+    // Sync with VenueRegistration
+    try {
+      const registration = await VenueRegistration.findOne({ owner: venue.owner });
+      if (registration) {
+        registration.venueImages = images.map(path => ({
+          url: path,
+          publicId: typeof path === 'string' && path.includes('/') ? path.split('/').pop() : 'legacy'
+        }));
+        await registration.save();
+      }
+    } catch (syncError) {
+      console.error('Sync to registration error:', syncError);
+    }
 
     res.status(200).json({
       success: true,

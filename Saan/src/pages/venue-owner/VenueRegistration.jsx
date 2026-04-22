@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { venueRegistrationAPI } from "../../services/api";
+import { venueRegistrationAPI, getImageUrl } from "../../services/api";
+
 import { Province, District, Municipality } from "states-nepal";
 
 // ==================== DIALOG COMPONENT ====================
@@ -186,7 +187,7 @@ const FileUpload = ({ label, description, accept, maxSize = 5, onFileSelect, pre
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
           className={`relative border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
-            dragOver ? "border-[#5d0f0f] bg-[#5d0f0f]/5" : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
+            dragOver ? "border-purple-800 bg-purple-800/5" : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
           }`}
         >
           <input
@@ -227,7 +228,7 @@ const FileUpload = ({ label, description, accept, maxSize = 5, onFileSelect, pre
                 </svg>
               </div>
               <p className="text-sm text-gray-600">
-                <span className="text-[#5d0f0f] font-medium">Click to upload</span> or drag and drop
+                <span className="text-purple-800 font-medium">Click to upload</span> or drag and drop
               </p>
               <p className="text-xs text-gray-400 mt-1">{accept.toUpperCase()} • Max {maxSize}MB {multiple && `• Up to ${maxFiles} files`}</p>
             </>
@@ -559,21 +560,21 @@ function VenueRegistration() {
               numberOfHalls: reg.numberOfHalls || "",
 
               // Profile image
-              profileImagePreview: reg.profileImage?.url || null,
+              profileImagePreview: getImageUrl(reg.profileImage?.url) || null,
               profileImageStatus: reg.profileImageStatus?.status || null,
 
               // Venue images
-              venueImagePreviews: reg.venueImages?.map(img => img.url) || [],
+              venueImagePreviews: reg.venueImages?.map(img => getImageUrl(img.url)) || [],
               venueImagesStatus: reg.venueImagesStatus?.status || null,
 
               // Documents
-              citizenshipFrontPreview: reg.documents?.citizenshipFront?.url || null,
+              citizenshipFrontPreview: getImageUrl(reg.documents?.citizenshipFront?.url) || null,
               citizenshipFrontStatus: reg.documents?.citizenshipFrontStatus?.status || null,
-              citizenshipBackPreview: reg.documents?.citizenshipBack?.url || null,
+              citizenshipBackPreview: getImageUrl(reg.documents?.citizenshipBack?.url) || null,
               citizenshipBackStatus: reg.documents?.citizenshipBackStatus?.status || null,
-              businessRegistrationPreview: reg.documents?.businessRegistration?.url || null,
+              businessRegistrationPreview: getImageUrl(reg.documents?.businessRegistration?.url) || null,
               businessRegistrationStatus: reg.documents?.businessRegistrationStatus?.status || null,
-              panCardPreview: reg.documents?.panCard?.url || null,
+              panCardPreview: getImageUrl(reg.documents?.panCard?.url) || null,
               panCardStatus: reg.documents?.panCardStatus?.status || null,
 
               // Location
@@ -830,7 +831,7 @@ function VenueRegistration() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#5d0f0f] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-purple-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-500">Loading registration data...</p>
         </div>
       </div>
@@ -967,7 +968,7 @@ function VenueRegistration() {
               onChange={(e) => handleChange("phone", e.target.value.replace(/[^0-9]/g, ""))}
               placeholder="98XXXXXXXX"
               maxLength={10}
-              className={`w-full pl-14 pr-12 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+              className={`w-full pl-14 pr-12 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                 formData.phone.length > 0
                   ? validatePhone(formData.phone)
                     ? "border-emerald-400 bg-emerald-50/30"
@@ -1084,7 +1085,7 @@ function VenueRegistration() {
               onChange={(e) => handleChange("venueName", e.target.value)}
               placeholder="Enter your venue name"
               disabled={isSectionLocked(formData.venueNameStatus)}
-              className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+              className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                 isSectionLocked(formData.venueNameStatus) ? "bg-gray-50 cursor-not-allowed" :
                 errors.venueName ? "border-red-300" : "border-gray-200"
               }`}
@@ -1102,7 +1103,7 @@ function VenueRegistration() {
                 onChange={(e) => handleChange("capacity", e.target.value)}
                 placeholder="e.g., 500"
                 disabled={isSectionLocked(formData.venueNameStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                   isSectionLocked(formData.venueNameStatus) ? "bg-gray-50 cursor-not-allowed" :
                   errors.capacity ? "border-red-300" : "border-gray-200"
                 }`}
@@ -1119,7 +1120,7 @@ function VenueRegistration() {
                 onChange={(e) => handleChange("numberOfHalls", e.target.value)}
                 placeholder="e.g., 3"
                 disabled={isSectionLocked(formData.venueNameStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                   isSectionLocked(formData.venueNameStatus) ? "bg-gray-50 cursor-not-allowed" :
                   errors.numberOfHalls ? "border-red-300" : "border-gray-200"
                 }`}
@@ -1199,7 +1200,7 @@ function VenueRegistration() {
 
             {/* Add More Button */}
             {formData.venueImages.length < 6 && formData.venueImagesStatus !== "APPROVED" && (
-              <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#5d0f0f] hover:bg-[#5d0f0f]/5 transition-all">
+              <label className="aspect-square border-2 border-dashed border-gray-200 rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-purple-800 hover:bg-purple-800/5 transition-all">
                 <input
                   type="file"
                   accept=".jpg,.jpeg,.png"
@@ -1398,7 +1399,7 @@ function VenueRegistration() {
                   handleChange("municipality", "");
                 }}
                 disabled={isSectionLocked(formData.locationStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] bg-white ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 bg-white ${
                   isSectionLocked(formData.locationStatus) ? "bg-gray-50 cursor-not-allowed" :
                   errors.location && !formData.province ? "border-red-300" : "border-gray-200"
                 }`}
@@ -1424,7 +1425,7 @@ function VenueRegistration() {
                   handleChange("municipality", "");
                 }}
                 disabled={!formData.province || isSectionLocked(formData.locationStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] bg-white ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 bg-white ${
                   !formData.province || isSectionLocked(formData.locationStatus) ? "bg-gray-50 cursor-not-allowed" : ""
                 } ${errors.location && !formData.district ? "border-red-300" : "border-gray-200"}`}
               >
@@ -1447,7 +1448,7 @@ function VenueRegistration() {
               value={formData.municipality}
               onChange={(e) => handleChange("municipality", e.target.value)}
               disabled={!formData.district || isSectionLocked(formData.locationStatus)}
-              className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] bg-white ${
+              className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 bg-white ${
                 !formData.district || isSectionLocked(formData.locationStatus) ? "bg-gray-50 cursor-not-allowed" : ""
               } ${errors.location && !formData.municipality ? "border-red-300" : "border-gray-200"}`}
             >
@@ -1465,7 +1466,7 @@ function VenueRegistration() {
                 value={formData.municipality}
                 onChange={(e) => handleChange("municipality", e.target.value)}
                 placeholder="Enter municipality name"
-                className="w-full mt-2 px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f]"
+                className="w-full mt-2 px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800"
               />
             )}
           </div>
@@ -1490,7 +1491,7 @@ function VenueRegistration() {
                 placeholder="e.g., 5"
                 maxLength={2}
                 disabled={isSectionLocked(formData.locationStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                   isSectionLocked(formData.locationStatus) ? "bg-gray-50 cursor-not-allowed" :
                   errors.location && !formData.wardNo ? "border-red-300" : "border-gray-200"
                 }`}
@@ -1508,7 +1509,7 @@ function VenueRegistration() {
                 onChange={(e) => handleChange("street", e.target.value)}
                 placeholder="e.g., Milan Chowk, Kapan"
                 disabled={isSectionLocked(formData.locationStatus)}
-                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] ${
+                className={`w-full px-4 py-2.5 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 ${
                   isSectionLocked(formData.locationStatus) ? "bg-gray-50 cursor-not-allowed" :
                   errors.location && !formData.street ? "border-red-300" : "border-gray-200"
                 }`}
@@ -1561,7 +1562,7 @@ function VenueRegistration() {
             className={`px-8 py-3 rounded-xl font-medium text-white transition-all ${
               isSubmitting
                 ? "bg-gray-400 cursor-not-allowed"
-                : "bg-[#5d0f0f] hover:bg-[#4a0c0c]"
+                : "bg-purple-800 hover:bg-purple-900"
             }`}
           >
             {isSubmitting ? (

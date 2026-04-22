@@ -359,7 +359,7 @@ function VenueMenuAndPackageManagement() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5d0f0f]"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-800"></div>
       </div>
     );
   }
@@ -371,7 +371,7 @@ function VenueMenuAndPackageManagement() {
         <div className="flex items-center gap-4 mb-8">
           <button
             onClick={() => navigate('/venue-owner/dashboard')}
-            className="flex items-center gap-2 text-[#5d0f0f] hover:text-[#4a0c0c] transition"
+            className="flex items-center gap-2 text-purple-800 hover:text-purple-900 transition"
           >
             <FaArrowLeft /> Back to Dashboard
           </button>
@@ -404,7 +404,7 @@ function VenueMenuAndPackageManagement() {
               onClick={() => setActiveTab('menus')}
               className={`flex-1 px-6 py-4 font-semibold border-b-2 transition ${
                 activeTab === 'menus'
-                  ? 'border-[#5d0f0f] text-[#5d0f0f]'
+                  ? 'border-purple-800 text-purple-800'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -414,7 +414,7 @@ function VenueMenuAndPackageManagement() {
               onClick={() => setActiveTab('packages')}
               className={`flex-1 px-6 py-4 font-semibold border-b-2 transition ${
                 activeTab === 'packages'
-                  ? 'border-[#5d0f0f] text-[#5d0f0f]'
+                  ? 'border-purple-800 text-purple-800'
                   : 'border-transparent text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -430,7 +430,7 @@ function VenueMenuAndPackageManagement() {
             <div className="flex justify-end">
               <button
                 onClick={() => setShowNewMenuForm(!showNewMenuForm)}
-                className="flex items-center gap-2 bg-[#5d0f0f] text-white px-6 py-3 rounded-lg hover:bg-[#4a0c0c] transition font-semibold"
+                className="flex items-center gap-2 bg-purple-800 text-white px-6 py-3 rounded-lg hover:bg-purple-900 transition font-semibold"
               >
                 <FaPlus /> Create Menu
               </button>
@@ -448,7 +448,7 @@ function VenueMenuAndPackageManagement() {
                     placeholder="e.g., North Indian, Chinese, Desserts"
                     value={newMenuData.name}
                     onChange={(e) => setNewMenuData({ ...newMenuData, name: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                   />
                 </div>
 
@@ -458,7 +458,7 @@ function VenueMenuAndPackageManagement() {
                     placeholder="Describe this menu..."
                     value={newMenuData.description}
                     onChange={(e) => setNewMenuData({ ...newMenuData, description: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f] h-20"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800 h-20"
                   />
                 </div>
 
@@ -471,7 +471,7 @@ function VenueMenuAndPackageManagement() {
                   </button>
                   <button
                     onClick={handleCreateMenu}
-                    className="px-6 py-2 bg-[#5d0f0f] text-white rounded-lg hover:bg-[#4a0c0c] transition flex items-center gap-2"
+                    className="px-6 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-900 transition flex items-center gap-2"
                   >
                     <FaSave /> Create Menu
                   </button>
@@ -514,7 +514,7 @@ function VenueMenuAndPackageManagement() {
                                 </div>
                                 {item.description && <p className="text-sm text-gray-600 mt-1">{item.description}</p>}
                                 <div className="mt-2 flex gap-4 text-sm">
-                                  <span className="text-[#5d0f0f] font-bold">₹{item.pricePerPlate}/plate</span>
+                                  <span className="text-purple-800 font-bold">₹{item.pricePerPlate}/plate</span>
                                   <span className="text-gray-600 capitalize">{item.category}</span>
                                 </div>
                               </div>
@@ -541,14 +541,14 @@ function VenueMenuAndPackageManagement() {
                             placeholder="Item name"
                             value={newItemData.name}
                             onChange={(e) => setNewItemData({ ...newItemData, name: e.target.value })}
-                            className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                            className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                           />
 
                           <textarea
                             placeholder="Item description (optional)"
                             value={newItemData.description}
                             onChange={(e) => setNewItemData({ ...newItemData, description: e.target.value })}
-                            className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f] h-16"
+                            className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800 h-16"
                           />
 
                           <div className="grid grid-cols-2 gap-3">
@@ -557,13 +557,13 @@ function VenueMenuAndPackageManagement() {
                               placeholder="Price per plate"
                               value={newItemData.pricePerPlate}
                               onChange={(e) => setNewItemData({ ...newItemData, pricePerPlate: e.target.value })}
-                              className="px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                              className="px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                             />
 
                             <select
                               value={newItemData.category}
                               onChange={(e) => setNewItemData({ ...newItemData, category: e.target.value })}
-                              className="px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                              className="px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                             >
                               <option value="main">Main Course</option>
                               <option value="starter">Starter</option>
@@ -600,7 +600,7 @@ function VenueMenuAndPackageManagement() {
                       ) : (
                         <button
                           onClick={() => setEditingMenuId(menu._id)}
-                          className="w-full border-2 border-dashed border-gray-300 py-3 rounded-lg text-gray-600 hover:border-[#5d0f0f] hover:text-[#5d0f0f] transition font-semibold flex items-center justify-center gap-2"
+                          className="w-full border-2 border-dashed border-gray-300 py-3 rounded-lg text-gray-600 hover:border-purple-800 hover:text-purple-800 transition font-semibold flex items-center justify-center gap-2"
                         >
                           <FaPlus /> Add Item to This Menu
                         </button>
@@ -620,7 +620,7 @@ function VenueMenuAndPackageManagement() {
             <div className="flex justify-end">
               <button
                 onClick={() => setShowNewPackageForm(!showNewPackageForm)}
-                className="flex items-center gap-2 bg-[#5d0f0f] text-white px-6 py-3 rounded-lg hover:bg-[#4a0c0c] transition font-semibold"
+                className="flex items-center gap-2 bg-purple-800 text-white px-6 py-3 rounded-lg hover:bg-purple-900 transition font-semibold"
               >
                 <FaPlus /> Create Package
               </button>
@@ -639,7 +639,7 @@ function VenueMenuAndPackageManagement() {
                       placeholder="e.g., Wedding Gold Package"
                       value={newPackageData.name}
                       onChange={(e) => setNewPackageData({ ...newPackageData, name: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     />
                   </div>
 
@@ -648,7 +648,7 @@ function VenueMenuAndPackageManagement() {
                     <select
                       value={newPackageData.type}
                       onChange={(e) => setNewPackageData({ ...newPackageData, type: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     >
                       {packageTypes.map(type => (
                         <option key={type} value={type} className="capitalize">
@@ -665,7 +665,7 @@ function VenueMenuAndPackageManagement() {
                     placeholder="Describe this package..."
                     value={newPackageData.description}
                     onChange={(e) => setNewPackageData({ ...newPackageData, description: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f] h-20"
+                    className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800 h-20"
                   />
                 </div>
 
@@ -677,7 +677,7 @@ function VenueMenuAndPackageManagement() {
                       placeholder="₹0"
                       value={newPackageData.basePrice}
                       onChange={(e) => setNewPackageData({ ...newPackageData, basePrice: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     />
                   </div>
 
@@ -688,7 +688,7 @@ function VenueMenuAndPackageManagement() {
                       placeholder="e.g., 50"
                       value={newPackageData.minGuestCapacity}
                       onChange={(e) => setNewPackageData({ ...newPackageData, minGuestCapacity: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     />
                   </div>
 
@@ -699,7 +699,7 @@ function VenueMenuAndPackageManagement() {
                       placeholder="e.g., 500"
                       value={newPackageData.maxGuestCapacity}
                       onChange={(e) => setNewPackageData({ ...newPackageData, maxGuestCapacity: e.target.value })}
-                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     />
                   </div>
                 </div>
@@ -714,7 +714,7 @@ function VenueMenuAndPackageManagement() {
                       value={newFeature}
                       onChange={(e) => setNewFeature(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAddFeature()}
-                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-[#5d0f0f]"
+                      className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-purple-800"
                     />
                     <button
                       onClick={handleAddFeature}
@@ -782,7 +782,7 @@ function VenueMenuAndPackageManagement() {
                           placeholder="Price (₹)"
                           value={newPackageData.addOns.decoration.price}
                           onChange={(e) => handleAddOnChange('decoration', 'price', e.target.value)}
-                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                         />
                       )}
                     </div>
@@ -804,7 +804,7 @@ function VenueMenuAndPackageManagement() {
                           placeholder="Price (₹)"
                           value={newPackageData.addOns.soundSystem.price}
                           onChange={(e) => handleAddOnChange('soundSystem', 'price', e.target.value)}
-                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                         />
                       )}
                     </div>
@@ -826,7 +826,7 @@ function VenueMenuAndPackageManagement() {
                           placeholder="Price (₹)"
                           value={newPackageData.addOns.bartender.price}
                           onChange={(e) => handleAddOnChange('bartender', 'price', e.target.value)}
-                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-[#5d0f0f]"
+                          className="w-full px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                         />
                       )}
                     </div>
@@ -847,7 +847,7 @@ function VenueMenuAndPackageManagement() {
                     className={`px-6 py-2 rounded-lg transition flex items-center gap-2 ${
                       loading 
                         ? 'bg-gray-400 text-white cursor-not-allowed' 
-                        : 'bg-[#5d0f0f] text-white hover:bg-[#4a0c0c]'
+                        : 'bg-purple-800 text-white hover:bg-purple-900'
                     }`}
                   >
                     {loading ? (
@@ -874,7 +874,7 @@ function VenueMenuAndPackageManagement() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {packages.map(pkg => (
                   <div key={pkg._id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition border-2 border-gray-200">
-                    <div className="bg-gradient-to-r from-[#5d0f0f] to-[#8b1515] h-20 flex items-center justify-between px-6">
+                    <div className="bg-gradient-to-r from-purple-800 to-[#8b1515] h-20 flex items-center justify-between px-6">
                       <h3 className="text-xl font-bold text-white">{pkg.name}</h3>
                       <button
                         onClick={() => handleDeletePackage(pkg._id)}
@@ -888,8 +888,8 @@ function VenueMenuAndPackageManagement() {
                       {pkg.description && <p className="text-gray-600">{pkg.description}</p>}
 
                       <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-bold text-[#5d0f0f]">₹{pkg.basePrice}</span>
-                        <span className="bg-[#5d0f0f] text-white px-3 py-1 rounded-full text-xs capitalize font-semibold">
+                        <span className="text-3xl font-bold text-purple-800">₹{pkg.basePrice}</span>
+                        <span className="bg-purple-800 text-white px-3 py-1 rounded-full text-xs capitalize font-semibold">
                           {pkg.type}
                         </span>
                       </div>
@@ -906,7 +906,7 @@ function VenueMenuAndPackageManagement() {
                           <ul className="space-y-1">
                             {pkg.features.map((feature, idx) => (
                               <li key={idx} className="text-sm text-gray-600 flex items-center gap-2">
-                                <span className="text-[#5d0f0f]">✓</span> {feature}
+                                <span className="text-purple-800">✓</span> {feature}
                               </li>
                             ))}
                           </ul>

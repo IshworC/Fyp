@@ -52,6 +52,14 @@ const bookingSchema = new mongoose.Schema({
       price: Number
     }
   },
+  customerEmail: {
+    type: String,
+    trim: true
+  },
+  customerName: {
+    type: String,
+    trim: true
+  },
   specialRequests: {
     type: String,
     trim: true
@@ -59,9 +67,18 @@ const bookingSchema = new mongoose.Schema({
   totalPrice: {
     type: Number
   },
+  paidAmount: {
+    type: Number,
+    default: 0
+  },
+  paymentType: {
+    type: String,
+    enum: ['full', 'advance', 'none'],
+    default: 'none'
+  },
   paymentStatus: {
     type: String,
-    enum: ['pending', 'paid', 'failed', 'refunded'],
+    enum: ['pending', 'paid', 'partially_paid', 'failed', 'refunded'],
     default: 'pending'
   },
   transactionUuid: {
@@ -75,8 +92,11 @@ const bookingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['pending', 'confirmed', 'cancelled', 'completed'],
+    enum: ['pending', 'confirmed', 'cancelled', 'completed', 'timely_booking', 'booked', 'expired'],
     default: 'pending'
+  },
+  expiresAt: {
+    type: Date
   },
   createdAt: {
     type: Date,
@@ -85,6 +105,10 @@ const bookingSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  isManual: {
+    type: Boolean,
+    default: false
   }
 });
 

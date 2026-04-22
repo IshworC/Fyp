@@ -11,10 +11,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Helper to construct file URL
-const getFileUrl = (req, filename, folder) => {
+// Helper to construct file URL (for external use like emails)
+const getFileFullUrl = (req, filename, folder) => {
   const protocol = req.protocol;
   const host = req.get('host');
   return `${protocol}://${host}/uploads/${folder}/${filename}`;
+};
+
+// Helper to get relative path for database
+const getRelativePath = (filename, folder) => {
+  return `/uploads/${folder}/${filename}`;
 };
 
 // =====================================================
@@ -85,7 +91,7 @@ export const createOrUpdateRegistration = async (req, res) => {
       if (req.files.profileImage && req.files.profileImage[0]) {
         const file = req.files.profileImage[0];
         fileData.profileImage = {
-          url: getFileUrl(req, file.filename, 'profiles'),
+          url: getRelativePath(file.filename, 'profiles'),
           publicId: file.filename
         };
         fileData.profileImageStatus = { status: 'PENDING' };
@@ -94,7 +100,7 @@ export const createOrUpdateRegistration = async (req, res) => {
       // Venue Images
       if (req.files.venueImages && req.files.venueImages.length > 0) {
         fileData.venueImages = req.files.venueImages.map(file => ({
-          url: getFileUrl(req, file.filename, 'venues'),
+          url: getRelativePath(file.filename, 'venues'),
           publicId: file.filename
         }));
         fileData.venueImagesStatus = { status: 'PENDING' };
@@ -107,7 +113,7 @@ export const createOrUpdateRegistration = async (req, res) => {
           const file = req.files[field][0];
           if (!fileData.documents) fileData.documents = {};
           fileData.documents[field] = {
-            url: getFileUrl(req, file.filename, 'documents'),
+            url: getRelativePath(file.filename, 'documents'),
             publicId: file.filename
           };
           fileData.documents[`${field}Status`] = { status: 'PENDING' };
@@ -272,7 +278,7 @@ export const uploadSingleDocument = async (req, res) => {
     if (fieldName === 'profileImage') folder = 'profiles';
     if (fieldName.includes('venue')) folder = 'venues';
 
-    const fileUrl = getFileUrl(req, req.file.filename, folder);
+    const fileUrl = getRelativePath(req.file.filename, folder);
 
     // Update registration with new file
     let registration = await VenueRegistration.findOne({ owner: req.userId });
@@ -356,7 +362,7 @@ export const addVenueImages = async (req, res) => {
     let registration = await VenueRegistration.findOne({ owner: req.userId });
 
     const newImages = req.files.map(file => ({
-      url: getFileUrl(req, file.filename, 'venues'),
+      url: getRelativePath(file.filename, 'venues'),
       publicId: file.filename
     }));
 
@@ -389,6 +395,13 @@ export const addVenueImages = async (req, res) => {
         },
         { new: true }
       );
+
+      // ✅ Sync with Venue model if it exists
+      if (registration.venue) {
+        await Venue.findByIdAndUpdate(registration.venue, {
+          $set: { images: registration.venueImages.map(img => img.url) }
+        });
+      }
     }
 
     res.status(200).json({
@@ -445,6 +458,13 @@ export const removeVenueImage = async (req, res) => {
     // Remove from array
     registration.venueImages.splice(imageIndex, 1);
     await registration.save();
+
+    // ✅ Sync with Venue model if it exists
+    if (registration.venue) {
+      await Venue.findByIdAndUpdate(registration.venue, {
+        $set: { images: registration.venueImages.map(img => img.url) }
+      });
+    }
 
     res.status(200).json({
       success: true,

@@ -8,7 +8,7 @@ function VenueGallery() {
           <h1 className="text-2xl font-bold text-gray-800">Venue Images</h1>
           <p className="text-gray-500 mt-1">Upload images of your venue for customers to see</p>
         </div>
-        <button className="px-4 py-2 bg-[#5d0f0f] text-white rounded-lg hover:bg-[#4a0c0c] transition text-sm font-medium">
+        <button className="px-4 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-900 transition text-sm font-medium">
           Upload Images
         </button>
       </div>

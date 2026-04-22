@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle, FaSpinner } from 'react-icons/fa';
 import Navigation from '../../components/Navigation';
+import { API_URL } from '../../services/api';
 
 function PaymentSuccess() {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ function PaymentSuccess() {
         }
 
         // Verify payment with backend
-        const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
         const response = await fetch(`${API_URL}/esewa/verify`, {
           method: 'POST',
           headers: {
@@ -72,13 +72,13 @@ function PaymentSuccess() {
               <div className="space-y-3">
                 <button
                   onClick={() => navigate('/')}
-                  className="w-full bg-[#5d0f0f] text-white py-3 px-6 rounded-lg hover:bg-[#4a0c0c] transition-colors font-semibold"
+                  className="w-full bg-purple-800 text-white py-3 px-6 rounded-lg hover:bg-purple-900 transition-colors font-semibold"
                 >
                   Go to Home
                 </button>
                 <button
                   onClick={() => navigate('/browse-venue')}
-                  className="w-full border-2 border-[#5d0f0f] text-[#5d0f0f] py-3 px-6 rounded-lg hover:bg-[#5d0f0f] hover:text-white transition-colors font-semibold"
+                  className="w-full border-2 border-purple-800 text-purple-800 py-3 px-6 rounded-lg hover:bg-purple-800 hover:text-white transition-colors font-semibold"
                 >
                   Browse More Venues
                 </button>
@@ -94,7 +94,7 @@ function PaymentSuccess() {
               <div className="space-y-3">
                 <button
                   onClick={() => navigate(-1)}
-                  className="w-full bg-[#5d0f0f] text-white py-3 px-6 rounded-lg hover:bg-[#4a0c0c] transition-colors font-semibold"
+                  className="w-full bg-purple-800 text-white py-3 px-6 rounded-lg hover:bg-purple-900 transition-colors font-semibold"
                 >
                   Try Again
                 </button>

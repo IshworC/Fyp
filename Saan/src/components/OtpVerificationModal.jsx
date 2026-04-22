@@ -111,7 +111,7 @@ function OtpVerificationModal({ email, name, onVerified, onClose }) {
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
         {/* Header */}
-        <div className="bg-[#5d0f0f] px-6 py-4">
+        <div className="bg-purple-800 px-6 py-4">
           <h2 className="text-xl font-bold text-white text-center">
             Verify Your Email
           </h2>
@@ -122,7 +122,7 @@ function OtpVerificationModal({ email, name, onVerified, onClose }) {
           <p className="text-gray-600 text-center mb-2">
             We've sent a 6-digit verification code to
           </p>
-          <p className="text-[#5d0f0f] font-semibold text-center mb-6">
+          <p className="text-purple-800 font-semibold text-center mb-6">
             {email}
           </p>
 
@@ -140,7 +140,7 @@ function OtpVerificationModal({ email, name, onVerified, onClose }) {
                 onKeyDown={(e) => handleKeyDown(index, e)}
                 onPaste={handlePaste}
                 disabled={isLoading}
-                className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-[#5d0f0f] focus:outline-none disabled:bg-gray-100"
+                className="w-12 h-14 text-center text-2xl font-bold border-2 border-gray-300 rounded-lg focus:border-purple-800 focus:outline-none disabled:bg-gray-100"
               />
             ))}
           </div>
@@ -156,7 +156,7 @@ function OtpVerificationModal({ email, name, onVerified, onClose }) {
           <button
             onClick={handleVerify}
             disabled={isLoading || otp.join("").length !== 6}
-            className="w-full bg-[#5d0f0f] text-white py-3 rounded-lg font-semibold hover:bg-[#4a0c0c] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full bg-purple-800 text-white py-3 rounded-lg font-semibold hover:bg-purple-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isLoading ? "Verifying..." : "Verify Email"}
           </button>
@@ -169,7 +169,7 @@ function OtpVerificationModal({ email, name, onVerified, onClose }) {
             <button
               onClick={handleResend}
               disabled={resendDisabled || isLoading}
-              className="text-[#5d0f0f] font-semibold hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
+              className="text-purple-800 font-semibold hover:underline disabled:text-gray-400 disabled:no-underline disabled:cursor-not-allowed"
             >
               {resendDisabled
                 ? `Resend in ${countdown}s`

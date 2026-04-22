@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
 
     if (file.fieldname === 'profileImage') {
       folder += 'profiles';
-    } else if (file.fieldname.includes('venue')) {
+    } else if (file.fieldname.includes('venue') || file.fieldname === 'images') {
       folder += 'venues';
     } else {
       folder += 'documents';

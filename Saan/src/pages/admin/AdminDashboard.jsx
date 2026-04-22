@@ -91,7 +91,7 @@ function AdminDashboard() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#5d0f0f] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-12 h-12 border-4 border-purple-800 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-500">Loading dashboard...</p>
         </div>
       </div>
@@ -114,7 +114,7 @@ function AdminDashboard() {
             >
               Review Registrations
             </button>
-            <button className="px-4 py-2 bg-[#5d0f0f] hover:bg-[#4a0c0c] rounded-lg text-sm font-medium transition-colors">
+            <button className="px-4 py-2 bg-purple-800 hover:bg-purple-900 rounded-lg text-sm font-medium transition-colors">
               Generate Report
             </button>
           </div>
@@ -154,8 +154,8 @@ function AdminDashboard() {
                 {stats.totalVenues} total registered
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
@@ -214,7 +214,7 @@ function AdminDashboard() {
             </div>
             <button
               onClick={() => navigate("/admin/registrations/all")}
-              className="text-sm text-[#5d0f0f] hover:text-[#4a0c0c] font-medium"
+              className="text-sm text-purple-800 hover:text-purple-900 font-medium"
             >
               View All
             </button>
@@ -249,7 +249,7 @@ function AdminDashboard() {
         {/* Quick Stats / Activity */}
         <div className="space-y-6">
           {/* Revenue Card */}
-          <div className="bg-gradient-to-br from-[#5d0f0f] to-[#8b1a1a] rounded-xl p-6 text-white">
+          <div className="bg-gradient-to-br from-purple-800 to-[#d4af37] rounded-xl p-6 text-white">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-white/80 font-medium">Platform Revenue</p>
               <span className="text-xs bg-white/20 px-2 py-1 rounded-full">This Month</span>
@@ -299,10 +299,10 @@ function AdminDashboard() {
 
               <button
                 onClick={() => navigate("/admin/reports")}
-                className="w-full flex items-center gap-3 px-4 py-3 bg-purple-50 hover:bg-purple-100 rounded-lg text-left transition-colors"
+                className="w-full flex items-center gap-3 px-4 py-3 bg-red-50 hover:bg-red-100 rounded-lg text-left transition-colors"
               >
-                <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                   </svg>
                 </div>

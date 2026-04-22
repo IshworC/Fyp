@@ -42,7 +42,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
 
   return (
     <form onSubmit={handleSignup} className="bg-gray-300 p-10 rounded-lg shadow-xl w-[380px] max-h-[90vh] overflow-y-auto">
-      <h1 className="text-3xl font-bold text-center text-[#5d0f0f] mb-6">Create Account</h1>
+      <h1 className="text-3xl font-bold text-center text-purple-800 mb-6">Create Account</h1>
 
       {(error || parentError) && (
         <div className="bg-red-200 text-red-800 p-3 rounded mb-4 text-sm">
@@ -50,7 +50,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
         </div>
       )}
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4 mb-2">Account Type</label>
+      <label className="block font-semibold text-purple-800 mt-4 mb-2">Account Type</label>
       <select
         name="role"
         value={formData.role}
@@ -62,7 +62,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
         <option value="venue-owner">Venue Owner</option>
       </select>
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">User Name</label>
+      <label className="block font-semibold text-purple-800 mt-4">User Name</label>
       <input
         type="text"
         name="name"
@@ -74,7 +74,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
         required
       />
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">Email</label>
+      <label className="block font-semibold text-purple-800 mt-4">Email</label>
       <input
         type="email"
         name="email"
@@ -89,7 +89,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
       {/* Venue Owner Specific Fields */}
       {formData.role === "venue-owner" && (
         <>
-          <label className="block font-semibold text-[#5d0f0f] mt-4">Venue Name</label>
+          <label className="block font-semibold text-purple-800 mt-4">Venue Name</label>
           <input
             type="text"
             name="venueName"
@@ -101,7 +101,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
             required={formData.role === "venue-owner"}
           />
 
-          <label className="block font-semibold text-[#5d0f0f] mt-4">Venue Type</label>
+          <label className="block font-semibold text-purple-800 mt-4">Venue Type</label>
           <select
             name="venueType"
             value={formData.venueType}
@@ -120,7 +120,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
             <option value="other">Other</option>
           </select>
 
-          <label className="block font-semibold text-[#5d0f0f] mt-4">City</label>
+          <label className="block font-semibold text-purple-800 mt-4">City</label>
           <input
             type="text"
             name="venueCity"
@@ -134,7 +134,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
         </>
       )}
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">Password</label>
+      <label className="block font-semibold text-purple-800 mt-4">Password</label>
       <input
         type="password"
         name="password"
@@ -146,7 +146,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
         required
       />
 
-      <label className="block font-semibold text-[#5d0f0f] mt-4">Confirm Password</label>
+      <label className="block font-semibold text-purple-800 mt-4">Confirm Password</label>
       <input
         type="password"
         name="confirmPassword"
@@ -160,7 +160,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
 
       <button 
         type="submit" 
-        className="w-full bg-[#5d0f0f] text-white py-2 mt-5 rounded hover:bg-[#4a0c0c] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-purple-800 text-white py-2 mt-5 rounded hover:bg-purple-900 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={isLoading}
       >
         {isLoading ? "Creating Account..." : "Create Account"}
@@ -170,7 +170,7 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
       <button 
         type="button" 
         onClick={onBackClick} 
-        className="w-full bg-white text-[#5d0f0f] py-2 mt-2 rounded border hover:bg-gray-100 disabled:opacity-50"
+        className="w-full bg-white text-purple-800 py-2 mt-2 rounded border hover:bg-gray-100 disabled:opacity-50"
         disabled={isLoading}
       >
         Back to Login

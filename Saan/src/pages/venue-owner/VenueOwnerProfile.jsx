@@ -20,14 +20,14 @@ function VenueOwnerProfile() {
         {/* Profile Card */}
         <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
           <div className="text-center">
-            <div className="w-24 h-24 bg-gradient-to-br from-[#5d0f0f] to-[#8b1a1a] rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-24 h-24 bg-gradient-to-br from-purple-800 to-[#d4af37] rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-white text-3xl font-bold">
                 {userName.charAt(0).toUpperCase()}
               </span>
             </div>
             <h2 className="text-xl font-semibold text-gray-800">{userName}</h2>
             <p className="text-gray-500 text-sm">{userEmail}</p>
-            <span className="inline-block mt-3 px-3 py-1 bg-[#5d0f0f]/10 text-[#5d0f0f] rounded-full text-sm font-medium">
+            <span className="inline-block mt-3 px-3 py-1 bg-purple-800/10 text-purple-800 rounded-full text-sm font-medium">
               Venue Owner
             </span>
           </div>
@@ -43,7 +43,7 @@ function VenueOwnerProfile() {
               <input
                 type="text"
                 value={userName}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f]"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800"
                 disabled
               />
             </div>
@@ -53,7 +53,7 @@ function VenueOwnerProfile() {
               <input
                 type="email"
                 value={userEmail}
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f]"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800"
                 disabled
               />
             </div>
@@ -63,12 +63,12 @@ function VenueOwnerProfile() {
               <input
                 type="tel"
                 placeholder="Enter phone number"
-                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f]"
+                className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800"
               />
             </div>
 
             <div className="pt-4">
-              <button className="px-6 py-2 bg-[#5d0f0f] text-white rounded-lg hover:bg-[#4a0c0c] transition text-sm font-medium">
+              <button className="px-6 py-2 bg-purple-800 text-white rounded-lg hover:bg-purple-900 transition text-sm font-medium">
                 Save Changes
               </button>
             </div>

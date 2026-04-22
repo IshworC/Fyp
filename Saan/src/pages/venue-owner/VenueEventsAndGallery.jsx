@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { venueAPI } from "../../services/api";
+import { venueAPI, getImageUrl } from "../../services/api";
+
 import { FaTrash, FaCloud, FaImage } from "react-icons/fa";
 
 function VenueEventsAndGallery() {
@@ -106,7 +107,7 @@ function VenueEventsAndGallery() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="inline-block relative w-12 h-12 mb-4">
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-[#5d0f0f]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-purple-800"></div>
           </div>
           <p className="text-gray-600">Loading gallery...</p>
         </div>
@@ -172,7 +173,7 @@ function VenueEventsAndGallery() {
             {/* Main Image Display */}
             <div className="relative w-full h-96 bg-gray-900 rounded-lg overflow-hidden group">
               <img
-                src={images[selectedImageIndex]}
+                src={getImageUrl(images[selectedImageIndex])}
                 alt={`Venue ${selectedImageIndex + 1}`}
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -246,12 +247,12 @@ function VenueEventsAndGallery() {
                     onClick={() => setSelectedImageIndex(idx)}
                     className={`aspect-square rounded-lg overflow-hidden border-3 transition transform hover:scale-105 ${
                       idx === selectedImageIndex
-                        ? "border-[#5d0f0f] ring-2 ring-[#5d0f0f]"
+                        ? "border-purple-800 ring-2 ring-purple-800"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
                     <img
-                      src={img}
+                      src={getImageUrl(img)}
                       alt={`Thumbnail ${idx + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => {

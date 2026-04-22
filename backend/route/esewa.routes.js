@@ -58,9 +58,11 @@ router.post('/initiate', async (req, res) => {
     console.log('Generated signature:', signature);
 
     // Save transactionUuid to your Booking record so you can verify later
+    const { paymentType = 'full' } = req.body;
     await Booking.findByIdAndUpdate(bookingId, {
       transactionUuid,
-      paymentStatus: 'pending'
+      paymentStatus: 'pending',
+      paymentType: paymentType
     });
 
     const responseData = {
@@ -162,12 +164,21 @@ router.post('/verify', async (req, res) => {
     }
 
     // 4. Update booking status in DB
+    const bookingToUpdate = await Booking.findById(bookingId);
+    let paymentStatus = 'paid';
+    
+    // If it's advance payment and paid amount is less than total, mark as partially_paid
+    if (bookingToUpdate && bookingToUpdate.paymentType === 'advance' && parseFloat(total_amount) < bookingToUpdate.totalPrice) {
+      paymentStatus = 'partially_paid';
+    }
+
     await Booking.findByIdAndUpdate(bookingId, {
-      paymentStatus: 'paid',
+      paymentStatus: paymentStatus,
       transactionCode: transaction_code,
       transactionUuid: transaction_uuid,
       paidAt: new Date(),
-      status: 'confirmed' // Also update booking status to confirmed
+      paidAmount: parseFloat(total_amount),
+      status: 'booked' // Updated status from 'confirmed' to 'booked'
     });
 
     // Send booking confirmation emails to user and venue owner

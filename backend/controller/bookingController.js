@@ -2,7 +2,7 @@ import Booking from '../models/Booking.js';
 import Venue from '../models/Venue.js';
 import User from '../models/User.js';
 import Message from '../models/Message.js';
-import { sendEmail } from '../config/mailer.js';
+import { sendEmail, sendPayLaterEmail, sendBookingConfirmationEmail } from '../config/mailer.js';
 
 // Create booking (user only)
 export const createBooking = async (req, res) => {
@@ -23,7 +23,9 @@ export const createBooking = async (req, res) => {
       selectedMenuItems,
       selectedPackage,
       selectedAddOns,
-      totalPrice
+      totalPrice,
+      customerEmail,
+      customerName
     } = req.body;
 
     // Validate required fields
@@ -61,13 +63,14 @@ export const createBooking = async (req, res) => {
     }
 
     // ✅ FIX DOUBLE BOOKING - prevent same venue + same date bookings
+    // Updated to check for both 'booked' and 'timely_booking'
     const existingBooking = await Booking.findOne({
       venue: venueId,
       eventDate: {
         $gte: new Date(selectedDate),
         $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000)
       },
-      status: { $in: ['pending', 'confirmed'] }
+      status: { $in: ['pending', 'confirmed', 'booked', 'timely_booking'] }
     });
 
     if (existingBooking) {
@@ -85,6 +88,16 @@ export const createBooking = async (req, res) => {
       });
     }
 
+    // Determine initial status and expiry
+    const { paymentMethod } = req.body;
+    let initialStatus = 'pending';
+    let expiresAt = null;
+
+    if (paymentMethod === 'pay_later') {
+      initialStatus = 'timely_booking';
+      expiresAt = new Date(Date.now() + 5 * 60 * 60 * 1000); // 5 hours from now
+    }
+
     // Get current user details
     const user = await User.findById(req.userId);
 
@@ -99,111 +112,63 @@ export const createBooking = async (req, res) => {
       selectedAddOns: selectedAddOns || {},
       specialRequests,
       totalPrice: totalPrice || (venue.pricePerPlate || 0),
+      customerEmail: customerEmail || user.email,
+      customerName: customerName || user.name,
       paymentStatus: 'pending',
-      status: 'pending'
+      status: initialStatus,
+      expiresAt: expiresAt
     });
 
-    // Send email to venue owner
-    try {
-      if (venue.owner && venue.owner.email) {
-        // Create initial chat message for the booking
-        const chatMessage = await Message.create({
-          venue: venueId,
-          sender: req.userId,
-          recipient: venue.owner._id,
-          text: `Hi! I've submitted a booking request for ${venue.name} on ${new Date(eventDate).toLocaleDateString()}. Please check your email for details and let me know if you need any additional information.`
+    // If Pay Later, send emails immediately
+    if (paymentMethod === 'pay_later') {
+      try {
+        if (user) {
+          await sendPayLaterEmail({
+            userEmail: user.email,
+            userName: user.name,
+            ownerEmail: venue.owner.email,
+            ownerName: venue.owner.name,
+            venueName: venue.name,
+            date: eventDate,
+            expiryTime: expiresAt
+          });
+        }
+      } catch (emailError) {
+        console.error('Error sending Pay Later email:', emailError);
+      }
+    }
+
+    // Send detailed confirmation email if not pay_later (those are handled above)
+    if (paymentMethod !== 'pay_later') {
+      try {
+        const emailPayload = {
+          venueName: venue.name,
+          userName: booking.customerName,
+          date: booking.eventDate,
+          eventType: booking.eventType,
+          guests: booking.numberOfGuests,
+          selectedPackage: booking.selectedPackage,
+          selectedMenuItems: booking.selectedMenuItems,
+          totalPrice: booking.totalPrice,
+          paidAmount: 0, // Initially 0 for user-facing until payment succeeds
+          paymentStatus: 'pending'
+        };
+
+        // Send to customer
+        await sendBookingConfirmationEmail({
+          ...emailPayload,
+          to: booking.customerEmail
         });
 
-        console.log('Initial chat message created for booking:', chatMessage._id);
-        // Build menu items list for email
-        let menuItemsHtml = '';
-        if (selectedMenuItems && selectedMenuItems.length > 0) {
-          menuItemsHtml = '<h3 style="color: #5d0f0f; margin-top: 15px;">📋 Selected Menu Items:</h3><ul style="margin: 10px 0;">';
-          selectedMenuItems.forEach(item => {
-            menuItemsHtml += `<li>${item.itemName} (${item.quantity}x) - ₹${item.price * item.quantity}</li>`;
-          });
-          menuItemsHtml += '</ul>';
-        }
-
-        // Build package info for email
-        let packageHtml = '';
-        if (selectedPackage && selectedPackage.packageName) {
-          packageHtml = `<h3 style="color: #5d0f0f; margin-top: 15px;">📦 Package:</h3>
-          <p>${selectedPackage.packageName} (${selectedPackage.packageType}) - ₹${selectedPackage.basePrice}</p>`;
-        }
-
-        // Build add-ons for email
-        let addOnsHtml = '';
-        if (selectedAddOns) {
-          const addOnsArray = [];
-          if (selectedAddOns.decoration && selectedAddOns.decoration.enabled) {
-            addOnsArray.push(`🎨 Decoration - ₹${selectedAddOns.decoration.price}`);
-          }
-          if (selectedAddOns.soundSystem && selectedAddOns.soundSystem.enabled) {
-            addOnsArray.push(`🔊 Sound System - ₹${selectedAddOns.soundSystem.price}`);
-          }
-          if (selectedAddOns.bartender && selectedAddOns.bartender.enabled) {
-            addOnsArray.push(`🍸 Bartender - ₹${selectedAddOns.bartender.price}`);
-          }
-          
-          if (addOnsArray.length > 0) {
-            addOnsHtml = '<h3 style="color: #5d0f0f; margin-top: 15px;">➕ Additional Services:</h3><ul style="margin: 10px 0;">';
-            addOnsArray.forEach(addOn => {
-              addOnsHtml += `<li>${addOn}</li>`;
-            });
-            addOnsHtml += '</ul>';
-          }
-        }
-
-        const emailContent = `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background-color: #5d0f0f; color: white; padding: 20px; text-align: center;">
-              <h2>🎉 New Booking Request!</h2>
-            </div>
-            
-            <div style="padding: 20px; background-color: #f9f9f9;">
-              <h3 style="color: #5d0f0f;">Booking Details</h3>
-              
-              <p><strong>Venue:</strong> ${venue.name}</p>
-              <p><strong>Customer Name:</strong> ${user.name}</p>
-              <p><strong>Customer Email:</strong> ${user.email}</p>
-              <p><strong>Customer Phone:</strong> ${user.phone || 'Not provided'}</p>
-              
-              <h3 style="color: #5d0f0f; margin-top: 15px;">📅 Event Details</h3>
-              <p><strong>Event Date:</strong> ${new Date(eventDate).toLocaleDateString()}</p>
-              <p><strong>Event Type:</strong> ${eventType}</p>
-              <p><strong>Number of Guests:</strong> ${numberOfGuests}</p>
-              
-              ${menuItemsHtml}
-              ${packageHtml}
-              ${addOnsHtml}
-              
-              ${specialRequests ? `<h3 style="color: #5d0f0f; margin-top: 15px;">📝 Special Requests:</h3><p>${specialRequests}</p>` : ''}
-              
-              <h3 style="color: #5d0f0f; margin-top: 15px;">💰 Total Price: ₹${totalPrice}</h3>
-              
-              <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
-                <p><strong>Status:</strong> <span style="color: orange; font-weight: bold;">Pending</span></p>
-                <p>Please log in to your dashboard to review and confirm/reject this booking.</p>
-                <p><strong>💬 Chat:</strong> A chat conversation has been started with the customer. You can communicate directly through the chat feature.</p>
-              </div>
-            </div>
-            
-            <div style="background-color: #5d0f0f; color: white; padding: 15px; text-align: center;">
-              <p style="margin: 0;">© SAAN - Venue Management System</p>
-            </div>
-          </div>
-        `;
-
-        await sendEmail(
-          venue.owner.email,
-          `New Booking Request for ${venue.name}`,
-          emailContent
-        );
+        // Send to owner
+        await sendBookingConfirmationEmail({
+          ...emailPayload,
+          to: venue.owner.email,
+          isOwner: true
+        });
+      } catch (err) {
+        console.error('Confirmation email error:', err);
       }
-    } catch (emailError) {
-      console.error('Error sending email to venue owner:', emailError);
-      // Don't fail the booking if email fails
     }
 
     res.status(201).json({
@@ -529,6 +494,179 @@ export const cancelBooking = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error cancelling booking',
+      error: error.message
+    });
+  }
+};
+
+// Create manual booking (venue owner only)
+export const createManualBooking = async (req, res) => {
+  try {
+    if (req.userRole !== 'venue-owner' && req.userRole !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Only venue owners can create manual bookings'
+      });
+    }
+
+    const { 
+      venueId, 
+      userEmail, // Owner provides customer email or name
+      userName,
+      eventDate, 
+      numberOfGuests, 
+      eventType, 
+      specialRequests,
+      selectedMenuItems,
+      selectedPackage,
+      selectedAddOns,
+      totalPrice,
+      paymentMethod // 'pay_later' or 'paid'
+    } = req.body;
+
+    // Basic validation
+    if (!venueId || !eventDate || !numberOfGuests || !eventType) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields'
+      });
+    }
+
+    // Check if venue belongs to this owner
+    const venue = await Venue.findOne({ _id: venueId, owner: req.userId });
+    if (!venue && req.userRole !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to create booking for this venue'
+      });
+    }
+
+    // Check double booking
+    const selectedDate = new Date(eventDate);
+    selectedDate.setHours(0,0,0,0);
+
+    const existingBooking = await Booking.findOne({
+      venue: venueId,
+      eventDate: {
+        $gte: new Date(selectedDate),
+        $lt: new Date(selectedDate.getTime() + 24 * 60 * 60 * 1000)
+      },
+      status: { $in: ['booked', 'timely_booking', 'confirmed'] }
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: 'Venue is already booked for this date'
+      });
+    }
+
+    // Create a shadow user or find existing if owner provides email
+    let targetUserId = req.userId; // Default to owner if no user provided
+    if (userEmail) {
+      const existingUser = await User.findOne({ email: userEmail });
+      if (existingUser) targetUserId = existingUser._id;
+    }
+
+    let initialStatus = 'booked';
+    let paymentStatus = 'paid';
+    let expiresAt = null;
+
+    if (paymentMethod === 'pay_later') {
+      initialStatus = 'timely_booking';
+      paymentStatus = 'pending';
+      expiresAt = new Date(Date.now() + 5 * 60 * 60 * 1000);
+    }
+
+    const booking = await Booking.create({
+      user: targetUserId,
+      venue: venueId,
+      eventDate,
+      numberOfGuests,
+      eventType,
+      selectedMenuItems: selectedMenuItems || [],
+      selectedPackage: selectedPackage || {},
+      selectedAddOns: selectedAddOns || {},
+      specialRequests,
+      totalPrice: totalPrice,
+      customerEmail: userEmail,
+      customerName: userName,
+      paymentStatus: paymentStatus,
+      status: initialStatus,
+      expiresAt: expiresAt,
+      paymentType: paymentStatus === 'paid' ? 'full' : 'none',
+      paidAmount: paymentStatus === 'paid' ? totalPrice : 0,
+      isManual: true
+    });
+
+    // Send confirmation emails
+    try {
+      const emailPayload = {
+        venueName: venue.name,
+        userName: booking.customerName || 'Valued Customer',
+        date: booking.eventDate,
+        eventType: booking.eventType,
+        guests: booking.numberOfGuests,
+        selectedPackage: booking.selectedPackage,
+        selectedMenuItems: booking.selectedMenuItems,
+        totalPrice: booking.totalPrice,
+        paidAmount: booking.paidAmount,
+        paymentStatus: booking.paymentStatus
+      };
+
+      // To Customer
+      if (userEmail) {
+        await sendBookingConfirmationEmail({
+          ...emailPayload,
+          to: userEmail
+        });
+      }
+
+      // To Owner
+      await sendBookingConfirmationEmail({
+        ...emailPayload,
+        to: venue.owner.email,
+        isOwner: true
+      });
+    } catch (err) {
+      console.error('Manual booking email error:', err);
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Manual booking created successfully',
+      booking
+    });
+  } catch (error) {
+    console.error('Manual booking error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating manual booking',
+      error: error.message
+    });
+  }
+};
+
+// Get public booked dates for a venue (no auth required)
+export const getPublicBookedDates = async (req, res) => {
+  try {
+    const venueId = req.params.venueId;
+
+    // Return the eventDates and status of bookings that are pending, confirmed, booked, or timely_booking
+    const bookings = await Booking.find({ 
+      venue: venueId,
+      status: { $in: ['pending', 'confirmed', 'booked', 'timely_booking'] }
+    }).select('eventDate status isManual -_id');
+
+    res.status(200).json({
+      success: true,
+      bookedDates: bookings // This will now be an array of { eventDate, status }
+    });
+  } catch (error) {
+    console.error('Get public booked dates error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching booked dates',
       error: error.message
     });
   }

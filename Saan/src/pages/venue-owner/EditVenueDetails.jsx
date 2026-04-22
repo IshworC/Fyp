@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { venueRegistrationAPI, venueAPI } from '../../services/api';
+import { venueRegistrationAPI, venueAPI, API_URL, BASE_URL, getImageUrl } from '../../services/api';
+
+
 import { FaArrowLeft, FaSave, FaEdit, FaTrash, FaCamera } from 'react-icons/fa';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 function EditVenueDetails() {
   const navigate = useNavigate();
@@ -243,7 +244,7 @@ function EditVenueDetails() {
               type={type}
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800"
               placeholder={type === 'number' ? '0' : 'Enter value'}
               disabled={saving}
             />
@@ -257,7 +258,7 @@ function EditVenueDetails() {
               <button
                 onClick={() => saveField(field)}
                 disabled={saving}
-                className="bg-[#5d0f0f] text-white px-3 py-2 rounded-lg hover:bg-[#4a0c0c] disabled:bg-gray-400 flex items-center gap-1 text-sm"
+                className="bg-purple-800 text-white px-3 py-2 rounded-lg hover:bg-purple-900 disabled:bg-gray-400 flex items-center gap-1 text-sm"
               >
                 <FaSave size={14} /> Save
               </button>
@@ -285,7 +286,7 @@ function EditVenueDetails() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#5d0f0f] mx-auto mb-3"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-purple-800 mx-auto mb-3"></div>
           <p>Loading details...</p>
         </div>
       </div>
@@ -299,7 +300,7 @@ function EditVenueDetails() {
           <p className="text-red-600 mb-4">No registration found</p>
           <button
             onClick={() => navigate('/venue-owner/dashboard')}
-            className="bg-[#5d0f0f] text-white px-6 py-2 rounded-lg hover:bg-[#4a0c0c]"
+            className="bg-purple-800 text-white px-6 py-2 rounded-lg hover:bg-purple-900"
           >
             Go Back
           </button>
@@ -315,7 +316,7 @@ function EditVenueDetails() {
         <div className="flex items-center gap-3 mb-6">
           <button
             onClick={() => navigate('/venue-owner/dashboard')}
-            className="text-[#5d0f0f] hover:text-[#4a0c0c] text-xl"
+            className="text-purple-800 hover:text-purple-900 text-xl"
           >
             <FaArrowLeft />
           </button>
@@ -380,7 +381,7 @@ function EditVenueDetails() {
                 {images.map((image, index) => (
                   <div key={index} className="relative group">
                     <img
-                      src={image.url || image}
+                      src={getImageUrl(image.url || image)}
                       alt="Venue"
                       className="w-full h-32 object-cover rounded-lg"
                     />

@@ -2,7 +2,7 @@ import React from "react";
 
 function Footer() {
   return (
-    <footer className="bg-[#5d0f0f] text-white">
+    <footer className="bg-purple-800 text-white">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="grid grid-cols-3 items-center mb-8">
           {/* Left - Logo */}

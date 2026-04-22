@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { adminVenueRegistrationAPI } from "../../services/api";
+import { adminVenueRegistrationAPI, getImageUrl } from "../../services/api";
+
 
 // Status filter tabs configuration
 const STATUS_TABS = [
@@ -70,7 +71,7 @@ const RejectSectionDialog = ({ isOpen, onClose, onConfirm, sectionLabel, isLoadi
               : "Explain what's wrong and what needs to be corrected..."
             }
             rows={3}
-            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] text-sm"
+            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 text-sm"
           />
         </div>
         <div className="flex gap-3 mt-6">
@@ -150,7 +151,7 @@ const FullscreenImageViewer = ({ isOpen, onClose, images, initialIndex = 0, titl
       {/* Image */}
       <div className="absolute inset-0 flex items-center justify-center p-16">
         <img
-          src={typeof currentImage === 'string' ? currentImage : currentImage?.url}
+          src={getImageUrl(typeof currentImage === 'string' ? currentImage : currentImage?.url)}
           alt={`${title} - ${currentIndex + 1}`}
           className="max-w-full max-h-full object-contain"
         />
@@ -193,7 +194,7 @@ const FullscreenImageViewer = ({ isOpen, onClose, images, initialIndex = 0, titl
                 }`}
               >
                 <img
-                  src={typeof img === 'string' ? img : img?.url}
+                  src={getImageUrl(typeof img === 'string' ? img : img?.url)}
                   alt={`Thumbnail ${idx + 1}`}
                   className="w-full h-full object-cover"
                 />
@@ -362,11 +363,11 @@ const SectionReviewCard = ({ section, registration, onApprove, onReject, isProce
         {section.type === "image" && (
           <div
             onClick={() => value && onImageClick?.([value], 0, section.label)}
-            className={`w-20 h-20 rounded-lg overflow-hidden bg-white relative ${value ? "cursor-pointer hover:ring-2 hover:ring-[#5d0f0f] transition-all" : ""}`}
+            className={`w-20 h-20 rounded-lg overflow-hidden bg-white relative ${value ? "cursor-pointer hover:ring-2 hover:ring-purple-800 transition-all" : ""}`}
           >
             {value ? (
               <>
-                <img src={value} alt={section.label} className="w-full h-full object-cover" />
+                <img src={getImageUrl(value)} alt={section.label} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/0 hover:bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-all">
                   <svg className="w-6 h-6 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -389,9 +390,9 @@ const SectionReviewCard = ({ section, registration, onApprove, onReject, isProce
                 <div
                   key={i}
                   onClick={() => onImageClick?.(value, i, section.label)}
-                  className="w-16 h-16 rounded-lg overflow-hidden bg-white cursor-pointer hover:ring-2 hover:ring-[#5d0f0f] transition-all relative group"
+                  className="w-16 h-16 rounded-lg overflow-hidden bg-white cursor-pointer hover:ring-2 hover:ring-purple-800 transition-all relative group"
                 >
-                  <img src={img.url} alt={`Venue ${i + 1}`} className="w-full h-full object-cover" />
+                  <img src={getImageUrl(img.url)} alt={`Venue ${i + 1}`} className="w-full h-full object-cover" />
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                     <svg className="w-4 h-4 text-white drop-shadow-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
@@ -415,11 +416,11 @@ const SectionReviewCard = ({ section, registration, onApprove, onReject, isProce
         {section.type === "document" && (
           <div
             onClick={() => value && onImageClick?.([value], 0, section.label)}
-            className={`w-full aspect-video max-w-[200px] rounded-lg overflow-hidden bg-white relative group ${value ? "cursor-pointer hover:ring-2 hover:ring-[#5d0f0f] transition-all" : ""}`}
+            className={`w-full aspect-video max-w-[200px] rounded-lg overflow-hidden bg-white relative group ${value ? "cursor-pointer hover:ring-2 hover:ring-purple-800 transition-all" : ""}`}
           >
             {value ? (
               <>
-                <img src={value} alt={section.label} className="w-full h-full object-cover" />
+                <img src={getImageUrl(value)} alt={section.label} className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
                   <div className="bg-white/90 rounded-full p-2">
                     <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -521,7 +522,7 @@ const ConfirmDialog = ({ isOpen, onClose, onConfirm, title, message, type = "war
               onChange={(e) => setReason(e.target.value)}
               placeholder="Please provide a reason..."
               rows={3}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f] text-sm"
+              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800 text-sm"
             />
           </div>
         )}
@@ -784,7 +785,7 @@ function RegistrationList() {
               <button
                 key={tab.id}
                 onClick={() => navigate(tab.path)}
-                className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${currentTab.id === tab.id ? "bg-[#5d0f0f] text-white" : "text-gray-600 hover:bg-gray-100"}`}
+                className={`px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${currentTab.id === tab.id ? "bg-purple-800 text-white" : "text-gray-600 hover:bg-gray-100"}`}
               >
                 {tab.label}
                 <span className={`px-2 py-0.5 rounded-full text-xs ${currentTab.id === tab.id ? "bg-white/20 text-white" : "bg-gray-100 text-gray-600"}`}>{count}</span>
@@ -806,7 +807,7 @@ function RegistrationList() {
               placeholder="Search by venue name..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#5d0f0f]/20 focus:border-[#5d0f0f]"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-800/20 focus:border-purple-800"
             />
           </div>
           <div className="flex items-center gap-3">
@@ -828,7 +829,7 @@ function RegistrationList() {
       <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-10 h-10 border-4 border-[#5d0f0f] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-purple-800 border-t-transparent rounded-full animate-spin"></div>
           </div>
         ) : registrations.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20">
@@ -868,7 +869,7 @@ function RegistrationList() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => { setSelectedRegistration(reg); setShowDetailModal(true); }}
-                          className="px-3 py-1.5 text-sm font-medium text-[#5d0f0f] bg-[#5d0f0f]/10 hover:bg-[#5d0f0f]/20 rounded-lg"
+                          className="px-3 py-1.5 text-sm font-medium text-purple-800 bg-purple-800/10 hover:bg-purple-800/20 rounded-lg"
                         >
                           Review
                         </button>
@@ -890,7 +891,7 @@ function RegistrationList() {
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
               </button>
               {getPageNumbers().map((p, i) => p === "..." ? <span key={i} className="px-3 py-2 text-gray-400">...</span> : (
-                <button key={p} onClick={() => handlePageChange(p)} className={`px-3 py-2 rounded-lg text-sm font-medium ${p === pagination.page ? "bg-[#5d0f0f] text-white" : "text-gray-600 hover:bg-gray-100"}`}>{p}</button>
+                <button key={p} onClick={() => handlePageChange(p)} className={`px-3 py-2 rounded-lg text-sm font-medium ${p === pagination.page ? "bg-purple-800 text-white" : "text-gray-600 hover:bg-gray-100"}`}>{p}</button>
               ))}
               <button onClick={() => handlePageChange(pagination.page + 1)} disabled={pagination.page === pagination.pages} className="p-2 text-gray-400 hover:text-gray-600 disabled:opacity-50">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>

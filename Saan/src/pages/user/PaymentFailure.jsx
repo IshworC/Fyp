@@ -38,7 +38,7 @@ function PaymentFailure() {
           <div className="space-y-3">
             <button
               onClick={() => navigate(-1)}
-              className="w-full bg-[#5d0f0f] text-white py-3 px-6 rounded-lg hover:bg-[#4a0c0c] transition-colors font-semibold flex items-center justify-center gap-2"
+              className="w-full bg-purple-800 text-white py-3 px-6 rounded-lg hover:bg-purple-900 transition-colors font-semibold flex items-center justify-center gap-2"
             >
               <FaArrowLeft /> Try Payment Again
             </button>

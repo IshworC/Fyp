@@ -143,8 +143,8 @@ function AdminLayout() {
         );
       case 'DOCUMENT_UPDATED':
         return (
-          <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-            <svg className="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+            <svg className="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
           </div>
@@ -300,7 +300,7 @@ function AdminLayout() {
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#5d0f0f] rounded-lg flex items-center justify-center">
+            <div className="w-9 h-9 bg-purple-800 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">S</span>
             </div>
             <div>
@@ -328,7 +328,7 @@ function AdminLayout() {
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={location.pathname.includes("/registrations") ? "text-[#5d0f0f]" : ""}>{item.icon}</span>
+                        <span className={location.pathname.includes("/registrations") ? "text-purple-800" : ""}>{item.icon}</span>
                         <span>{item.label}</span>
                       </div>
                       <svg
@@ -349,7 +349,7 @@ function AdminLayout() {
                               className={({ isActive }) =>
                                 `block px-3 py-2 rounded-lg text-sm transition-colors ${
                                   isActive
-                                    ? "text-white bg-[#5d0f0f] font-medium"
+                                    ? "text-white bg-purple-800 font-medium"
                                     : "text-gray-400 hover:text-white hover:bg-white/5"
                                 }`
                               }
@@ -376,7 +376,7 @@ function AdminLayout() {
                   >
                     {({ isActive }) => (
                       <>
-                        <span className={isActive ? "text-[#5d0f0f]" : ""}>{item.icon}</span>
+                        <span className={isActive ? "text-purple-800" : ""}>{item.icon}</span>
                         <span>{item.label}</span>
                       </>
                     )}
@@ -390,7 +390,7 @@ function AdminLayout() {
         {/* Admin Profile in Sidebar */}
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-2 py-2">
-            <div className="w-10 h-10 bg-[#5d0f0f] rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-purple-800 rounded-full flex items-center justify-center">
               <span className="text-white font-semibold">
                 {userName.charAt(0).toUpperCase()}
               </span>
@@ -453,7 +453,7 @@ function AdminLayout() {
                       {unreadCount > 0 && (
                         <button
                           onClick={handleMarkAllAsRead}
-                          className="text-xs text-[#5d0f0f] hover:text-[#4a0c0c] font-medium"
+                          className="text-xs text-purple-800 hover:text-purple-900 font-medium"
                         >
                           Mark all as read
                         </button>
@@ -464,7 +464,7 @@ function AdminLayout() {
                     <div className="max-h-[400px] overflow-y-auto">
                       {loadingNotifications ? (
                         <div className="px-4 py-8 text-center text-gray-500">
-                          <svg className="animate-spin h-6 w-6 mx-auto mb-2 text-[#5d0f0f]" fill="none" viewBox="0 0 24 24">
+                          <svg className="animate-spin h-6 w-6 mx-auto mb-2 text-purple-800" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                           </svg>
@@ -494,7 +494,7 @@ function AdminLayout() {
                                     {notification.title}
                                   </p>
                                   {!notification.read && (
-                                    <span className="w-2 h-2 bg-[#5d0f0f] rounded-full flex-shrink-0 mt-1.5"></span>
+                                    <span className="w-2 h-2 bg-purple-800 rounded-full flex-shrink-0 mt-1.5"></span>
                                   )}
                                 </div>
                                 <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">
@@ -518,7 +518,7 @@ function AdminLayout() {
                             setNotificationOpen(false);
                             navigate('/admin/notifications');
                           }}
-                          className="w-full text-center text-sm text-[#5d0f0f] hover:text-[#4a0c0c] font-medium py-1"
+                          className="w-full text-center text-sm text-purple-800 hover:text-purple-900 font-medium py-1"
                         >
                           View all notifications
                         </button>
@@ -529,7 +529,7 @@ function AdminLayout() {
               </div>
 
               {/* Quick Actions */}
-              <button className="px-4 py-2 bg-[#5d0f0f] text-white text-sm font-medium rounded-lg hover:bg-[#4a0c0c] transition-colors">
+              <button className="px-4 py-2 bg-purple-800 text-white text-sm font-medium rounded-lg hover:bg-purple-900 transition-colors">
                 Quick Actions
               </button>
             </div>

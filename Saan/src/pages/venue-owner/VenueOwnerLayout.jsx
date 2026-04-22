@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { NavLink, useNavigate, Outlet, useLocation } from "react-router-dom";
 import { notificationAPI, venueRegistrationAPI, venueAPI } from "../../services/api";
+import { 
+  FaBell, 
+  FaUserCircle, 
+  FaChevronDown, 
+  FaSignOutAlt, 
+  FaSearch, 
+  FaCalendarAlt, 
+  FaCheckCircle, 
+  FaHistory 
+} from "react-icons/fa";
 
 function VenueOwnerLayout() {
   const navigate = useNavigate();
@@ -179,10 +189,9 @@ function VenueOwnerLayout() {
     const path = location.pathname;
     if (path.includes("/dashboard")) return { title: "Dashboard", subtitle: "Overview of your venue performance" };
     if (path.includes("/registration")) return { title: "Venue Registration", subtitle: "Register and manage your venue details" };
-    if (path.includes("/bookings/requests")) return { title: "Pending Booking Requests", subtitle: "Review and manage incoming booking requests" };
-    if (path.includes("/bookings/confirmed")) return { title: "Confirmed Bookings", subtitle: "View your confirmed and upcoming bookings" };
-    if (path.includes("/bookings/completed")) return { title: "Completed Events", subtitle: "History of completed bookings and events" };
-    if (path.includes("/bookings/cancelled")) return { title: "Cancelled Bookings", subtitle: "View history of cancelled booking requests" };
+    if (path.includes("/timely-booked")) return { title: "Timely Booked", subtitle: "Holdings pending payment (5-hour window)" };
+    if (path.includes("/booked")) return { title: "Booked", subtitle: "Confirmed bookings with successful payments" };
+    if (path.includes("/calendar")) return { title: "Venue Calendar", subtitle: "Visual overview of all bookings" };
     if (path.includes("/events-gallery")) return { title: "Events & Gallery", subtitle: "Showcase your past events and venue photos" };
     if (path.includes("/menu")) return { title: "Menu & Package Management", subtitle: "Create menus, packages, and add-ons" };
     if (path.includes("/profile")) return { title: "Settings", subtitle: "Manage your account settings" };
@@ -212,19 +221,25 @@ function VenueOwnerLayout() {
       ),
     },
     {
-      path: "/venue-owner/bookings",
-      label: "Bookings",
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      ),
-      subItems: [
-        { path: "/venue-owner/bookings/requests", label: "Requests" },
-        { path: "/venue-owner/bookings/confirmed", label: "Confirmed" },
-        { path: "/venue-owner/bookings/completed", label: "Completed" },
-        { path: "/venue-owner/bookings/cancelled", label: "Cancelled" },
-      ],
+      id: "timely-booked",
+      label: "Timely Booked",
+      path: "/venue-owner/timely-booked",
+      icon: <FaHistory className="w-5 h-5" />,
+      color: "blue"
+    },
+    {
+      id: "booked",
+      label: "Booked",
+      path: "/venue-owner/booked",
+      icon: <FaCheckCircle className="w-5 h-5" />,
+      color: "green"
+    },
+    {
+      id: "calendar",
+      label: "Calendar",
+      path: "/venue-owner/calendar",
+      icon: <FaCalendarAlt className="w-5 h-5" />,
+      color: "purple"
     },
     {
       path: "/venue-owner/events-gallery",
@@ -273,7 +288,7 @@ function VenueOwnerLayout() {
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-[#5d0f0f] rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-purple-800 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">S</span>
             </div>
             <div>
@@ -321,7 +336,7 @@ function VenueOwnerLayout() {
                               className={({ isActive }) =>
                                 `block px-3 py-2 rounded-lg text-sm transition-colors ${
                                   isActive
-                                    ? "text-[#5d0f0f] bg-[#5d0f0f]/5 font-medium"
+                                    ? "text-purple-800 bg-purple-800/5 font-medium"
                                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                                 }`
                               }
@@ -346,7 +361,7 @@ function VenueOwnerLayout() {
                       }}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         location.pathname.includes("/menu")
-                          ? "text-[#5d0f0f] bg-[#5d0f0f]/5"
+                          ? "text-purple-800 bg-purple-800/5"
                           : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                       }`}
                     >
@@ -360,7 +375,7 @@ function VenueOwnerLayout() {
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                           isActive
-                            ? "text-[#5d0f0f] bg-[#5d0f0f]/5"
+                            ? "text-purple-800 bg-purple-800/5"
                             : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                         }`
                       }
@@ -426,7 +441,7 @@ function VenueOwnerLayout() {
                     {unreadCount > 0 && (
                       <button
                         onClick={handleMarkAllAsRead}
-                        className="text-xs text-[#5d0f0f] hover:underline"
+                        className="text-xs text-purple-800 hover:underline"
                       >
                         Mark all as read
                       </button>
@@ -435,7 +450,7 @@ function VenueOwnerLayout() {
                   <div className="max-h-96 overflow-y-auto">
                     {notificationLoading ? (
                       <div className="flex items-center justify-center py-8">
-                        <div className="w-6 h-6 border-2 border-[#5d0f0f] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-6 h-6 border-2 border-purple-800 border-t-transparent rounded-full animate-spin"></div>
                       </div>
                     ) : notifications.length === 0 ? (
                       <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
@@ -455,7 +470,7 @@ function VenueOwnerLayout() {
                         >
                           <div className="flex items-start gap-3">
                             <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                              !notification.read ? "bg-[#5d0f0f]" : "bg-transparent"
+                              !notification.read ? "bg-purple-800" : "bg-transparent"
                             }`}></div>
                             <div className="flex-1 min-w-0">
                               <p className={`text-sm ${!notification.read ? "font-semibold text-gray-900" : "text-gray-700"}`}>
@@ -477,7 +492,7 @@ function VenueOwnerLayout() {
                     <div className="px-4 py-2 border-t border-gray-100 bg-gray-50">
                       <button
                         onClick={() => { setNotificationOpen(false); navigate("/venue-owner/notifications"); }}
-                        className="w-full text-center text-sm text-[#5d0f0f] hover:underline"
+                        className="w-full text-center text-sm text-purple-800 hover:underline"
                       >
                         View all notifications
                       </button>
@@ -493,7 +508,7 @@ function VenueOwnerLayout() {
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="w-9 h-9 bg-[#5d0f0f] rounded-full flex items-center justify-center">
+                <div className="w-9 h-9 bg-purple-800 rounded-full flex items-center justify-center">
                   <span className="text-white font-medium text-sm">
                     {userName.charAt(0).toUpperCase()}
                   </span>

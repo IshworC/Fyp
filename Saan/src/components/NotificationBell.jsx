@@ -132,7 +132,7 @@ const NotificationBell = () => {
                 <button
                   onClick={markAllAsRead}
                   disabled={loading}
-                  className="text-sm text-[#5d0f0f] hover:text-[#4a0c0c] font-medium disabled:opacity-50"
+                  className="text-sm text-purple-800 hover:text-purple-900 font-medium disabled:opacity-50"
                 >
                   Mark all read
                 </button>
@@ -192,7 +192,7 @@ const NotificationBell = () => {
             <div className="p-3 bg-gray-50 border-t text-center">
               <button
                 onClick={() => navigate('/notifications')}
-                className="text-sm text-[#5d0f0f] hover:text-[#4a0c0c] font-medium"
+                className="text-sm text-purple-800 hover:text-purple-900 font-medium"
               >
                 View all notifications
               </button>

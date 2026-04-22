@@ -12,7 +12,8 @@ import {
   FaTiktok
 } from "react-icons/fa";
 import Navigation from "../../components/Navigation";
-import { venueAPI } from "../../services/api";
+import { venueAPI, BASE_URL, getImageUrl } from "../../services/api";
+
 
 function UserHome() {
   const navigate = useNavigate();
@@ -48,7 +49,7 @@ function UserHome() {
             id: venue._id,
             name: venue.name || 'Unnamed Venue',
             image: venue.images && venue.images.length > 0 
-              ? venue.images[0] 
+              ? getImageUrl(venue.images[0])
               : "https://images.unsplash.com/photo-1519677100203-3f3e5d046410?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
             rating: Number.isFinite(Number(venue.rating)) ? Math.max(0, Math.min(5, Number(venue.rating))) : 0,
             location: `${venue.city || 'Location'}${venue.address ? ', ' + venue.address : ''}`,
@@ -124,7 +125,7 @@ function UserHome() {
       <div className="pt-16"></div>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-[#5d0f0f] to-[#7a1c1c]">
+      <div className="relative bg-gradient-to-br from-purple-800 to-purple-700">
         <div className="absolute inset-0 bg-black opacity-50">
           <img
             src="https://i.pinimg.com/1200x/0f/53/0f/0f530fc2d1a3feaef403ca936b218ce5.jpg"
@@ -156,7 +157,7 @@ function UserHome() {
                     onChange={(e) =>
                       setSearchFilters({ ...searchFilters, eventType: e.target.value })
                     }
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] focus:border-transparent text-gray-700 bg-gray-50"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent text-gray-700 bg-gray-50"
                   >
                     <option value="">Event Type</option>
                     {eventTypes.map((type) => (
@@ -176,7 +177,7 @@ function UserHome() {
                     onChange={(e) =>
                       setSearchFilters({ ...searchFilters, location: e.target.value })
                     }
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] focus:border-transparent text-gray-700 bg-gray-50"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent text-gray-700 bg-gray-50"
                   />
                 </div>
 
@@ -190,7 +191,7 @@ function UserHome() {
                     onChange={(e) =>
                       setSearchFilters({ ...searchFilters, date: e.target.value })
                     }
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] focus:border-transparent text-gray-700 bg-gray-50"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent text-gray-700 bg-gray-50"
                   />
                 </div>
 
@@ -208,14 +209,14 @@ function UserHome() {
                         attendees: e.target.value,
                       })
                     }
-                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] focus:border-transparent text-gray-700 bg-gray-50"
+                    className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-800 focus:border-transparent text-gray-700 bg-gray-50"
                   />
                 </div>
               </div>
               
               <button 
                 onClick={handleSearch}
-                className="mt-6 w-full md:w-auto bg-gradient-to-r from-[#5d0f0f] to-[#7a1c1c] text-white px-8 py-3 rounded-xl hover:from-[#4a0c0c] hover:to-[#651616] font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                className="mt-6 w-full md:w-auto bg-gradient-to-r from-purple-800 to-purple-700 text-white px-8 py-3 rounded-xl hover:from-purple-900 hover:to-purple-800 font-semibold transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
               >
                 <FaSearch />
                 <span>Explore Venues</span>
@@ -225,30 +226,13 @@ function UserHome() {
         </div>
       </div>
 
-      {/* Stats Section */}
-      <div className="bg-white py-12 shadow-sm">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: "Venues Listed", value: "200+" },
-              { label: "Happy Customers", value: "5,000+" },
-              { label: "Events Hosted", value: "10,000+" },
-              { label: "Cities Covered", value: "15+" }
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-[#5d0f0f] mb-2">{stat.value}</div>
-                <div className="text-gray-600">{stat.label}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+
 
       {/* Popular Venues Section */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Popular <span className="text-[#5d0f0f]">Venues</span>
+            Popular <span className="text-purple-800">Venues</span>
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Discover the most sought-after venues for your perfect event
@@ -259,7 +243,7 @@ function UserHome() {
         {loadingVenues ? (
           <div className="flex items-center justify-center py-16">
             <div className="text-center">
-              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#5d0f0f] mb-4"></div>
+              <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-800 mb-4"></div>
               <p className="text-gray-600">Loading venues...</p>
             </div>
           </div>
@@ -287,7 +271,7 @@ function UserHome() {
                       }}
                     />
                     <div className="absolute top-4 right-4">
-                      <span className="bg-[#5d0f0f] text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
+                      <span className="bg-purple-800 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-lg">
                         {venue.type}
                       </span>
                     </div>
@@ -320,7 +304,7 @@ function UserHome() {
 
                     <button 
                       onClick={() => handleVenueClick(venue.id)}
-                      className="w-full bg-gradient-to-r from-[#5d0f0f] to-[#7a1c1c] text-white py-3 rounded-xl hover:from-[#4a0c0c] hover:to-[#651616] font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
+                      className="w-full bg-gradient-to-r from-purple-800 to-purple-700 text-white py-3 rounded-xl hover:from-purple-900 hover:to-purple-800 font-semibold transition-all duration-300 shadow-md hover:shadow-lg"
                     >
                       View Details
                     </button>
@@ -335,7 +319,7 @@ function UserHome() {
         <div className="text-center mt-12">
           <Link
             to="/browse-venue"
-            className="inline-block border-2 border-[#5d0f0f] text-[#5d0f0f] hover:bg-[#5d0f0f] hover:text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300"
+            className="inline-block border-2 border-purple-800 text-purple-800 hover:bg-purple-800 hover:text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300"
           >
             View All Venues
           </Link>
@@ -343,7 +327,7 @@ function UserHome() {
       </div>
 
       {/* Footer - REMOVED CTA SECTION AND NEWSLETTER */}
-      <footer className="bg-[#3a0a0a] text-white">
+      <footer className="bg-[#382904] text-white">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Company Info */}

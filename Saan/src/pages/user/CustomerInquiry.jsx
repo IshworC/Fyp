@@ -60,7 +60,7 @@ function CustomerInquiry() {
 
       <div className="pt-24 px-4 min-h-screen bg-gray-100">
         <div className="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-md">
-          <h1 className="text-3xl font-bold text-center mb-6 text-[#5d0f0f]">
+          <h1 className="text-3xl font-bold text-center mb-6 text-purple-800">
             Customer Inquiry / Complaint
           </h1>
 
@@ -89,7 +89,7 @@ function CustomerInquiry() {
                 onChange={handleChange}
                 required
                 disabled={loading}
-                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-800 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -103,7 +103,7 @@ function CustomerInquiry() {
                 onChange={handleChange}
                 required
                 disabled={loading}
-                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-800 disabled:bg-gray-100 disabled:cursor-not-allowed"
               />
             </div>
 
@@ -134,7 +134,7 @@ function CustomerInquiry() {
                 required
                 disabled={loading}
                 rows="5"
-                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#5d0f0f] disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-800 disabled:bg-gray-100 disabled:cursor-not-allowed"
               ></textarea>
             </div>
 
@@ -142,7 +142,7 @@ function CustomerInquiry() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#5d0f0f] text-white py-3 rounded-lg font-medium hover:bg-[#7a1a1a] transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
+              className="w-full bg-purple-800 text-white py-3 rounded-lg font-medium hover:bg-[#7a1a1a] transition disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center"
             >
               {loading ? (
                 <>

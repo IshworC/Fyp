@@ -51,7 +51,7 @@ function Navigation() {
   }
 
   return (
-    <nav className="fixed top-0 w-full bg-[#5d0f0f] text-white shadow-lg z-50">
+    <nav className="fixed top-0 w-full bg-purple-800 text-white shadow-lg z-50">
       <div className="container mx-auto px-4 xl:px-8 2xl:px-12">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -105,9 +105,13 @@ function Navigation() {
             
             <button 
               onClick={handleLogout} 
-              className="bg-white text-[#5d0f0f] px-3 lg:px-4 py-2 rounded-lg hover:bg-gray-100 font-medium transition-colors text-sm lg:text-base whitespace-nowrap"
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors text-white flex items-center justify-center"
+              title="Logout"
+              aria-label="Logout"
             >
-              Logout
+              <svg className="w-5 h-5 lg:w-6 lg:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
             </button>
           </div>
         </div>

@@ -116,7 +116,7 @@ function AboutUs() {
       <Navigation />
       
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-br from-[#5d0f0f] via-[#7a1c1c] to-[#3a0a0a] text-white overflow-hidden">
+      <div className="relative bg-gradient-to-br from-purple-800 via-purple-700 to-[#382904] text-white overflow-hidden">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-72 h-72 bg-white rounded-full blur-3xl"></div>
@@ -145,12 +145,12 @@ function AboutUs() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-[#5d0f0f]/10 text-[#5d0f0f] px-4 py-2 rounded-full font-semibold">
+              <div className="inline-flex items-center gap-2 bg-purple-800/10 text-purple-800 px-4 py-2 rounded-full font-semibold">
                 <FaAward className="w-5 h-5" />
                 Our Mission
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                To Make Every Event <span className="text-[#5d0f0f]">Memorable</span>
+                To Make Every Event <span className="text-purple-800">Memorable</span>
               </h2>
               <p className="text-gray-600 text-lg">
                 We believe every celebration deserves the perfect setting. Our mission is to simplify 
@@ -159,18 +159,18 @@ function AboutUs() {
               </p>
               <div className="pt-6 border-t border-gray-200">
                 <p className="text-gray-700 font-medium">
-                  <span className="text-[#5d0f0f] font-bold">Ishwor Chalise</span>, Founder & CEO
+                  <span className="text-purple-800 font-bold">Ishwor Chalise</span>, Founder & CEO
                 </p>
               </div>
             </div>
             
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-[#5d0f0f]/10 text-[#5d0f0f] px-4 py-2 rounded-full font-semibold">
+              <div className="inline-flex items-center gap-2 bg-purple-800/10 text-purple-800 px-4 py-2 rounded-full font-semibold">
                 <FaStar className="w-5 h-5" />
                 Our Vision
               </div>
               <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-                Leading <span className="text-[#5d0f0f]">Digital Transformation</span> in Events
+                Leading <span className="text-purple-800">Digital Transformation</span> in Events
               </h2>
               <p className="text-gray-600 text-lg">
                 We envision becoming South Asia's most trusted event platform, leveraging technology 
@@ -181,7 +181,7 @@ function AboutUs() {
                 <p className="text-gray-700 italic">
                   "Our success is measured by the smiles we help create and the memories we help preserve."
                 </p>
-                <p className="mt-4 font-semibold text-[#5d0f0f]">
+                <p className="mt-4 font-semibold text-purple-800">
                   — Ishwor Chalise, Chief Technology Officer
                 </p>
               </div>
@@ -191,7 +191,7 @@ function AboutUs() {
       </div>
 
       {/* Stats Section */}
-      <div className="py-16 bg-gradient-to-r from-[#5d0f0f] to-[#7a1c1c] text-white">
+      <div className="py-16 bg-gradient-to-r from-purple-800 to-purple-700 text-white">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             {stats.map((stat, index) => (
@@ -212,7 +212,7 @@ function AboutUs() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Our <span className="text-[#5d0f0f]">Journey</span>
+              Our <span className="text-purple-800">Journey</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               From humble beginnings to becoming Nepal's leading venue platform
@@ -236,7 +236,7 @@ function AboutUs() {
                   <div className={`w-full md:w-1/2 ${index % 2 === 0 ? 'md:pr-12' : 'md:pl-12'}`}>
                     <div className="bg-white p-6 rounded-2xl shadow-lg border border-gray-100">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="bg-[#5d0f0f] text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl">
+                        <div className="bg-purple-800 text-white w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl">
                           {milestone.year}
                         </div>
                         <div>
@@ -247,7 +247,7 @@ function AboutUs() {
                       {index === 0 && (
                         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-100">
                           <p className="text-sm text-gray-700">
-                            Founded by <span className="font-bold text-[#5d0f0f]">Ishwor Chalise</span> 
+                            Founded by <span className="font-bold text-purple-800">Ishwor Chalise</span> 
                             with a vision to transform how Nepal books venues
                           </p>
                         </div>
@@ -256,7 +256,7 @@ function AboutUs() {
                   </div>
                   
                   {/* Dot on timeline */}
-                  <div className="hidden md:block w-8 h-8 bg-[#5d0f0f] rounded-full border-4 border-white shadow-lg relative z-10 mx-4"></div>
+                  <div className="hidden md:block w-8 h-8 bg-purple-800 rounded-full border-4 border-white shadow-lg relative z-10 mx-4"></div>
                   
                   {/* Empty space for alternating layout */}
                   <div className="w-full md:w-1/2"></div>
@@ -272,7 +272,7 @@ function AboutUs() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Our <span className="text-[#5d0f0f]">Values</span>
+              Our <span className="text-purple-800">Values</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               The principles that guide every decision we make
@@ -285,7 +285,7 @@ function AboutUs() {
                 key={index}
                 className="bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100"
               >
-                <div className="text-[#5d0f0f] mb-6">
+                <div className="text-purple-800 mb-6">
                   {value.icon}
                 </div>
                 <h3 className="text-xl font-bold text-gray-900 mb-4">{value.title}</h3>
@@ -301,7 +301,7 @@ function AboutUs() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Meet Our <span className="text-[#5d0f0f]">Leadership</span>
+              Meet Our <span className="text-purple-800">Leadership</span>
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Led by visionary professionals dedicated to excellence
@@ -327,28 +327,28 @@ function AboutUs() {
                 {/* Team Member Details */}
                 <div className="p-6">
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                  <p className="text-[#5d0f0f] font-semibold mb-3">{member.position}</p>
+                  <p className="text-purple-800 font-semibold mb-3">{member.position}</p>
                   <p className="text-gray-600 text-sm mb-6">{member.description}</p>
                   
                   {/* Social Links */}
                   <div className="flex space-x-4">
                     <a
                       href={member.social.linkedin}
-                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-[#5d0f0f] hover:text-white transition-colors"
+                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-purple-800 hover:text-white transition-colors"
                       aria-label="LinkedIn"
                     >
                       <FaLinkedinIn className="w-5 h-5" />
                     </a>
                     <a
                       href={member.social.twitter}
-                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-[#5d0f0f] hover:text-white transition-colors"
+                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-purple-800 hover:text-white transition-colors"
                       aria-label="Twitter"
                     >
                       <FaTwitter className="w-5 h-5" />
                     </a>
                     <a
                       href={member.social.email}
-                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-[#5d0f0f] hover:text-white transition-colors"
+                      className="w-10 h-10 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center hover:bg-purple-800 hover:text-white transition-colors"
                       aria-label="Email"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -365,11 +365,11 @@ function AboutUs() {
           <div className="mt-16 text-center">
             <div className="bg-gradient-to-r from-[#f8f0f0] to-[#f0e0e0] p-8 rounded-2xl max-w-3xl mx-auto">
               <p className="text-lg text-gray-700 mb-4">
-                "Our team, led by <span className="font-bold text-[#5d0f0f]">Ishwor Chalise</span> in every key position, 
+                "Our team, led by <span className="font-bold text-purple-800">Ishwor Chalise</span> in every key position, 
                 works tirelessly to ensure that every event booked through SAAN becomes a cherished memory. 
                 We combine traditional hospitality values with modern technology to serve you better."
               </p>
-              <p className="font-semibold text-[#5d0f0f]">
+              <p className="font-semibold text-purple-800">
                 — Ishwor Chalise, Head of Operations
               </p>
             </div>
@@ -378,7 +378,7 @@ function AboutUs() {
       </div>
 
       {/* CTA Section */}
-      <div className="py-16 md:py-24 bg-gradient-to-r from-[#5d0f0f] to-[#7a1c1c] text-white">
+      <div className="py-16 md:py-24 bg-gradient-to-r from-purple-800 to-purple-700 text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">
             Ready to Create Unforgettable Memories?
@@ -387,7 +387,7 @@ function AboutUs() {
             Join thousands who trust SAAN for their most important celebrations
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-[#5d0f0f] px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg">
+            <button className="bg-white text-purple-800 px-8 py-3 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg">
               Browse Venues
             </button>
             <button className="bg-transparent border-2 border-white text-white px-8 py-3 rounded-xl font-semibold hover:bg-white/10 transition-all duration-300">
@@ -398,7 +398,7 @@ function AboutUs() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[#3a0a0a] text-white">
+      <footer className="bg-[#382904] text-white">
         <div className="container mx-auto px-4 py-12">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             {/* Company Info */}
@@ -464,7 +464,7 @@ function AboutUs() {
                   placeholder="Your email"
                   className="flex-1 px-4 py-3 rounded-l-lg text-gray-900 focus:outline-none"
                 />
-                <button className="bg-[#5d0f0f] px-6 py-3 rounded-r-lg hover:bg-[#4a0c0c] transition-colors">
+                <button className="bg-purple-800 px-6 py-3 rounded-r-lg hover:bg-purple-900 transition-colors">
                   Subscribe
                 </button>
               </div>
