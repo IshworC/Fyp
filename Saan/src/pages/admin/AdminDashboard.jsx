@@ -33,7 +33,7 @@ function AdminDashboard() {
         for (const reg of allRegistrations) {
           if (reg.venue) {
             try {
-              const bookingsResponse = await bookingAPI.getVenueBookings(reg.venue, token);
+              const bookingsResponse = await bookingAPI.getVenueBookings(token, reg.venue?._id || reg.venue);
               totalBookings += (bookingsResponse.bookings || []).length;
             } catch (error) {
               // Skip if error fetching for this venue
@@ -101,11 +101,11 @@ function AdminDashboard() {
   return (
     <div className="space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-[#1a1a2e] to-[#16213e] rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-night-blue to-night-blue-shadow rounded-2xl p-6 text-white shadow-xl">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold">Welcome back, Admin!</h2>
-            <p className="text-gray-300 mt-1">Here's what's happening with your platform today.</p>
+            <p className="text-gray-100 mt-1">Here's what's happening with your platform today.</p>
           </div>
           <div className="hidden md:flex items-center gap-3">
             <button
@@ -114,7 +114,7 @@ function AdminDashboard() {
             >
               Review Registrations
             </button>
-            <button className="px-4 py-2 bg-purple-800 hover:bg-purple-900 rounded-lg text-sm font-medium transition-colors">
+            <button className="px-4 py-2 bg-night-blue hover:bg-sand-tan rounded-lg text-sm font-medium transition-colors border border-white/20">
               Generate Report
             </button>
           </div>
@@ -137,7 +137,7 @@ function AdminDashboard() {
               </p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 text-night-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
             </div>
@@ -154,8 +154,8 @@ function AdminDashboard() {
                 {stats.totalVenues} total registered
               </p>
             </div>
-            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-              <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-12 h-12 bg-sand-tan/20 rounded-xl flex items-center justify-center">
+              <svg className="w-6 h-6 text-sand-tan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
               </svg>
             </div>
@@ -214,7 +214,7 @@ function AdminDashboard() {
             </div>
             <button
               onClick={() => navigate("/admin/registrations/all")}
-              className="text-sm text-purple-800 hover:text-purple-900 font-medium"
+              className="text-sm text-night-blue hover:text-night-blue-shadow font-medium"
             >
               View All
             </button>
@@ -228,7 +228,7 @@ function AdminDashboard() {
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 text-night-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                   </div>
@@ -249,7 +249,7 @@ function AdminDashboard() {
         {/* Quick Stats / Activity */}
         <div className="space-y-6">
           {/* Revenue Card */}
-          <div className="bg-gradient-to-br from-purple-800 to-[#d4af37] rounded-xl p-6 text-white">
+          <div className="bg-gradient-to-br from-night-blue to-night-blue-shadow rounded-xl p-6 text-white shadow-lg">
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm text-white/80 font-medium">Platform Revenue</p>
               <span className="text-xs bg-white/20 px-2 py-1 rounded-full">This Month</span>

@@ -282,18 +282,18 @@ function VenueOwnerLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA]">
+    <div className="min-h-screen bg-sand-tan">
       {/* ========== SIDEBAR ========== */}
-      <aside className="fixed left-0 top-0 bottom-0 w-60 bg-white border-r border-gray-200 flex flex-col z-50">
+      <aside className="fixed left-0 top-0 bottom-0 w-60 bg-night-blue-shadow border-r border-white/10 flex flex-col z-50">
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-purple-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">S</span>
+            <div className="w-8 h-8 bg-sand-tan rounded-lg flex items-center justify-center">
+              <span className="text-night-blue font-bold text-sm">S</span>
             </div>
             <div>
-              <h1 className="text-gray-900 font-semibold text-base">SAAN</h1>
-              <p className="text-gray-400 text-[10px] leading-none">Venue Management</p>
+              <h1 className="text-white font-semibold text-base">SAAN</h1>
+              <p className="text-sand-tan text-[10px] leading-none">Venue Management</p>
             </div>
           </div>
         </div>
@@ -310,12 +310,12 @@ function VenueOwnerLayout() {
                       onClick={() => setExpandedItem(expandedItem === item.label ? null : item.label)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         location.pathname.includes("/bookings")
-                          ? "text-gray-900 bg-gray-50"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          ? "text-night-blue bg-sand-tan"
+                          : "text-white hover:bg-white/10"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className="text-gray-400">{item.icon}</span>
+                        <span className="text-white">{item.icon}</span>
                         <span>{item.label}</span>
                       </div>
                       <svg
@@ -336,8 +336,8 @@ function VenueOwnerLayout() {
                               className={({ isActive }) =>
                                 `block px-3 py-2 rounded-lg text-sm transition-colors ${
                                   isActive
-                                    ? "text-purple-800 bg-purple-800/5 font-medium"
-                                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                                    ? "text-night-blue bg-sand-tan font-medium"
+                                    : "text-white/70 hover:text-white hover:bg-white/5"
                                 }`
                               }
                             >
@@ -361,11 +361,11 @@ function VenueOwnerLayout() {
                       }}
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         location.pathname.includes("/menu")
-                          ? "text-purple-800 bg-purple-800/5"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                          ? "text-night-blue bg-sand-tan font-medium"
+                          : "text-white hover:bg-white/10"
                       }`}
                     >
-                      <span className="text-gray-400">{item.icon}</span>
+                      <span className="text-white">{item.icon}</span>
                       <span>{item.label}</span>
                     </button>
                   ) : (
@@ -375,12 +375,12 @@ function VenueOwnerLayout() {
                       className={({ isActive }) =>
                         `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                           isActive
-                            ? "text-purple-800 bg-purple-800/5"
-                            : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                            ? "text-night-blue bg-sand-tan font-medium"
+                            : "text-white hover:bg-white/10"
                         }`
                       }
                     >
-                      <span className="text-gray-400">{item.icon}</span>
+                      <span className="text-white">{item.icon}</span>
                       <span>{item.label}</span>
                     </NavLink>
                   )
@@ -394,7 +394,7 @@ function VenueOwnerLayout() {
         <div className="p-3 border-t border-gray-100">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-red-600 hover:bg-red-50 transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-white hover:text-red-400 hover:bg-white/10 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -508,17 +508,17 @@ function VenueOwnerLayout() {
                 onClick={() => setProfileOpen(!profileOpen)}
                 className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <div className="w-9 h-9 bg-purple-800 rounded-full flex items-center justify-center">
-                  <span className="text-white font-medium text-sm">
+                <div className="w-9 h-9 bg-night-blue rounded-full flex items-center justify-center">
+                  <span className="text-sand-tan font-medium text-sm">
                     {userName.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div className="text-left hidden sm:block">
-                  <p className="text-sm font-medium text-gray-900">{userName}</p>
-                  <p className="text-xs text-gray-500">Venue Owner</p>
+                  <p className="text-sm font-medium text-night-blue">{userName}</p>
+                  <p className="text-xs text-night-blue-shadow opacity-75">Venue Owner</p>
                 </div>
                 <svg
-                  className={`w-4 h-4 text-gray-400 transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                  className={`w-4 h-4 text-heavy-purple transition-transform ${profileOpen ? "rotate-180" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

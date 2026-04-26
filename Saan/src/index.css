@@ -1,1 +1,69 @@
 @import "tailwindcss";
+
+@theme {
+  --color-sand-tan: #e1b382;
+  --color-sand-tan-shadow: #c89666;
+  --color-night-blue: #2d545e;
+  --color-night-blue-shadow: #12343b;
+
+  /* Restoring standard colors for maximum visibility */
+  --color-white: #ffffff;
+  --color-black: #000000;
+  
+  /* Alias names to keep existing JSX functional but updated */
+  --color-ice-cold: var(--color-night-blue-shadow);
+  --color-freeze-purple: var(--color-sand-tan);
+  --color-medium-purple: var(--color-sand-tan-shadow);
+  --color-purple-pain: var(--color-night-blue);
+  --color-heavy-purple: var(--color-night-blue-shadow);
+
+  /* Map common Tailwind scales to our new palette */
+  --color-gray-50: #fcf8f4; /* Near white tan */
+  --color-gray-100: var(--color-sand-tan);
+  --color-gray-200: var(--color-sand-tan-shadow);
+  --color-gray-300: var(--color-night-blue);
+  --color-gray-400: var(--color-night-blue);
+  --color-gray-500: var(--color-night-blue);
+  --color-gray-600: var(--color-night-blue-shadow);
+  --color-gray-700: var(--color-night-blue-shadow);
+  --color-gray-800: var(--color-night-blue-shadow);
+  --color-gray-900: var(--color-black);
+
+  --color-purple-50: var(--color-sand-tan);
+  --color-purple-100: var(--color-sand-tan-shadow);
+  --color-purple-500: var(--color-night-blue);
+  --color-purple-600: var(--color-night-blue);
+  --color-purple-700: var(--color-night-blue-shadow);
+  --color-purple-800: var(--color-night-blue-shadow);
+  --color-purple-900: var(--color-black);
+
+  /* Map accents */
+  --color-blue-500: var(--color-night-blue);
+  --color-green-500: #10b981; /* Standard success for visibility */
+  --color-red-500: #ef4444;   /* Standard error for visibility */
+}
+
+@layer base {
+  body {
+    @apply bg-sand-tan text-black;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-night-blue-shadow font-black;
+  }
+
+  ::selection {
+    @apply bg-night-blue text-white;
+  }
+}
+
+@layer utilities {
+  .bg-glass {
+    @apply bg-freeze-purple/30 backdrop-blur-md border border-medium-purple/20;
+  }
+  
+  .premium-card {
+    @apply bg-freeze-purple rounded-[2.5rem] shadow-xl border border-medium-purple transition-all duration-300;
+  }
+}

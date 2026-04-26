@@ -12,10 +12,10 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--color-purple-pain));
 }
 .logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  filter: drop-shadow(0 0 2em var(--color-ice-cold));
 }
 
 @keyframes logo-spin {
@@ -35,8 +35,9 @@
 
 .card {
   padding: 2em;
+  @apply bg-medium-purple rounded-3xl border border-heavy-purple/20;
 }
 
 .read-the-docs {
-  color: #888;
+  @apply text-heavy-purple;
 }

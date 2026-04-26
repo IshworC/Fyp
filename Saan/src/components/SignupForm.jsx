@@ -1,6 +1,7 @@
 import React from "react";
+import { GoogleLogin } from '@react-oauth/google';
 
-function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentError = "" }) {
+function SignupForm({ onSignup, onGoogleLogin, onBackClick, isLoading = false, error: parentError = "" }) {
   const [formData, setFormData] = React.useState({
     name: "",
     email: "",
@@ -49,6 +50,31 @@ function SignupForm({ onSignup, onBackClick, isLoading = false, error: parentErr
           {error || parentError}
         </div>
       )}
+
+      {/* Google Sign Up */}
+      <div className="mb-5 flex justify-center w-full">
+        <GoogleLogin
+          onSuccess={(credentialResponse) => {
+            if (onGoogleLogin) {
+              onGoogleLogin(credentialResponse.credential);
+            }
+          }}
+          onError={() => {
+            console.log('Login Failed');
+          }}
+          theme="outline"
+          size="large"
+          text="signup_with"
+          shape="rectangular"
+          width="100%"
+        />
+      </div>
+
+      <div className="flex items-center gap-4 mb-5">
+        <div className="flex-1 h-px bg-gray-400"></div>
+        <span className="text-xs text-gray-600 font-semibold uppercase tracking-wider">or sign up with email</span>
+        <div className="flex-1 h-px bg-gray-400"></div>
+      </div>
 
       <label className="block font-semibold text-purple-800 mt-4 mb-2">Account Type</label>
       <select

@@ -39,6 +39,10 @@ const venueSchema = new mongoose.Schema({
   pricePerDay: {
     type: Number
   },
+  pricePerPlate: {
+    type: Number,
+    default: null
+  },
   images: [String],
   description: {
     type: String
@@ -76,6 +80,11 @@ const venueSchema = new mongoose.Schema({
       }
     }
   ],
+  registration: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'VenueRegistration',
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

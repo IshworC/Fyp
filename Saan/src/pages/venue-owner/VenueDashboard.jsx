@@ -257,7 +257,7 @@ function VenueDashboard() {
             <button
               onClick={() => navigate("/venue-owner/registration")}
               className={`mt-4 px-5 py-2.5 text-white text-sm font-medium rounded-lg transition-colors ${
-                bannerInfo.urgent ? "bg-red-600 hover:bg-red-700" : "bg-purple-800 hover:bg-purple-900"
+                bannerInfo.urgent ? "bg-red-600 hover:bg-red-700" : "bg-night-blue hover:bg-night-blue-shadow"
               }`}
             >
               {bannerInfo.buttonText}
@@ -274,7 +274,7 @@ function VenueDashboard() {
                       step.done
                         ? "bg-emerald-500 text-white"
                         : i === currentStep - 1
-                        ? "bg-purple-800 text-white"
+                        ? "bg-night-blue text-white"
                         : "bg-gray-100 text-gray-400"
                     }`}
                   >
@@ -406,7 +406,7 @@ function VenueDashboard() {
               <span className="text-xs font-medium text-gray-600 mb-2">{item.value}</span>
               <div className="w-full bg-gray-50 rounded-lg relative" style={{ height: "160px" }}>
                 <div
-                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-purple-800 to-[#8b2020] rounded-lg transition-all duration-500"
+                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-night-blue to-night-blue-shadow rounded-lg transition-all duration-500"
                   style={{ height: `${(item.value / max) * 100}%` }}
                 />
               </div>
@@ -427,7 +427,7 @@ function VenueDashboard() {
     const data = [
       { label: "Pending", value: pending, color: "#f59e0b" },
       { label: "Confirmed", value: confirmed, color: "#10b981" },
-      { label: "Completed", value: completed, color: "#6366f1" },
+      { label: "Completed", value: completed, color: "#1e3a8a" },
     ];
     const radius = 40;
     const circumference = 2 * Math.PI * radius;
@@ -491,7 +491,7 @@ function VenueDashboard() {
           <h3 className="text-sm font-semibold text-gray-900">Recent Booking Requests</h3>
           <button
             onClick={() => navigate("/venue-owner/bookings/requests")}
-            className="text-xs font-medium text-purple-800 hover:underline"
+            className="text-xs font-medium text-night-blue hover:underline"
           >
             View all
           </button>
@@ -644,7 +644,7 @@ function VenueDashboard() {
                 onClick={() => conv.userId && conv.userName && setSelectedChat({ userId: conv.userId, userName: conv.userName })}
                 className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer border border-transparent hover:border-gray-200 transition-colors"
               >
-                <div className="w-10 h-10 rounded-full bg-purple-800 flex items-center justify-center flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-night-blue flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-semibold text-sm">
                     {conv.userName ? conv.userName.charAt(0).toUpperCase() : '?'}
                   </span>

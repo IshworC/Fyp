@@ -4,7 +4,7 @@ import { venueAPI, menuAPI, packageAPI, bookingAPI, esewaAPI, BASE_URL, getImage
 
 
 import ChatBox from '../../components/ChatBox';
-import { FaArrowLeft, FaPhone, FaEnvelope, FaMapMarkerAlt, FaShoppingCart, FaPlus, FaMinus, FaChevronLeft, FaChevronRight, FaTimes, FaStar, FaStarHalfAlt, FaUsers, FaCheckCircle } from 'react-icons/fa';
+import { FaArrowLeft, FaPhone, FaEnvelope, FaMapMarkerAlt, FaShoppingCart, FaPlus, FaMinus, FaChevronLeft, FaChevronRight, FaTimes, FaStar, FaStarHalfAlt, FaUsers, FaCheckCircle, FaClock } from 'react-icons/fa';
 
 function UserVenueDetail() {
   const { venueId } = useParams();
@@ -52,13 +52,15 @@ function UserVenueDetail() {
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [bookingSuccess, setBookingSuccess] = useState('');
 
-  // Rating state
+  const [hasUserRated, setHasUserRated] = useState(false);
   const [userRating, setUserRating] = useState(0);
   const [userReview, setUserReview] = useState('');
-  const [hasUserRated, setHasUserRated] = useState(false);
   const [reviewLoading, setReviewLoading] = useState(false);
 
-  // Fetch data
+  // Hold state
+  const [activeHold, setActiveHold] = useState(null);
+  const [holdTimer, setHoldTimer] = useState('');
+
   useEffect(() => {
     fetchData();
     if (token) {
@@ -68,8 +70,67 @@ function UserVenueDetail() {
         setCustomerName(decoded.name || '');
         setCustomerEmail(decoded.email || '');
       } catch (e) {}
+      checkActiveHold();
     }
   }, [venueId]);
+
+  const checkActiveHold = async () => {
+    try {
+      const response = await bookingAPI.getMyBookings(token);
+      if (response.success) {
+        const hold = response.bookings.find(b => 
+          (b.venue?._id || b.venue) === venueId && 
+          b.status === 'timely_booking' && 
+          new Date(b.expiresAt) > new Date()
+        );
+
+        if (hold) {
+          setActiveHold(hold);
+          // Pre-fill everything
+          setNumberOfGuests(hold.numberOfGuests);
+          setBookingData({
+            eventDate: new Date(hold.eventDate).toISOString().split('T')[0],
+            eventType: hold.eventType,
+            selectedPackage: hold.selectedPackage?.packageId || null,
+            specialRequirements: hold.specialRequests || ''
+          });
+          
+          // Reconstruct selectedItems
+          const itemsMap = {};
+          hold.selectedMenuItems?.forEach(item => {
+            itemsMap[`${item.menuId}-${item.itemId}`] = item.quantity;
+          });
+          setSelectedItems(itemsMap);
+        }
+      }
+    } catch (err) {
+      console.error('Error checking hold:', err);
+    }
+  };
+
+  useEffect(() => {
+    if (!activeHold) return;
+
+    const timer = setInterval(() => {
+      const now = new Date();
+      const expiry = new Date(activeHold.expiresAt);
+      const diff = expiry - now;
+
+      if (diff <= 0) {
+        setHoldTimer('EXPIRED');
+        setActiveHold(null);
+        clearInterval(timer);
+        return;
+      }
+
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setHoldTimer(`${h}h ${m}m ${s}s`);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [activeHold]);
 
   const fetchBookedDates = async () => {
     const response = await bookingAPI.getPublicBookedDates(venueId);
@@ -254,16 +315,30 @@ function UserVenueDetail() {
       const amountToPay = paymentType === 'full' ? totalPrice : Math.ceil(totalPrice * 0.5);
 
       const payload = getBookingPayload(totalPrice, 'esewa');
-      const bookingResponse = await bookingAPI.createBooking(token, payload);
       
-      if (!bookingResponse.success) {
-        setError(bookingResponse.message || 'Booking failed');
-        setShowErrorPopup(true);
-        setPaymentLoading(false);
-        return;
+      let bookingId;
+      if (activeHold) {
+        // Update existing booking first
+        const updateResponse = await bookingAPI.updateBooking(token, activeHold._id, payload);
+        if (!updateResponse.success) {
+          setError(updateResponse.message || 'Failed to update booking');
+          setShowErrorPopup(true);
+          setPaymentLoading(false);
+          return;
+        }
+        bookingId = activeHold._id;
+      } else {
+        // Create new booking
+        const bookingResponse = await bookingAPI.createBooking(token, payload);
+        if (!bookingResponse.success) {
+          setError(bookingResponse.message || 'Booking failed');
+          setShowErrorPopup(true);
+          setPaymentLoading(false);
+          return;
+        }
+        bookingId = bookingResponse.booking?._id || bookingResponse.data?._id;
       }
 
-      const bookingId = bookingResponse.booking?._id || bookingResponse.data?._id;
       const esewaData = await esewaAPI.initiatePayment(token, bookingId, amountToPay, { paymentType });
 
       if (esewaData.success) {
@@ -355,22 +430,28 @@ function UserVenueDetail() {
               alt={venue.name} 
               className="w-full h-full object-cover transition-transform duration-1000 scale-105" 
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-night-blue via-night-blue/20 to-transparent"></div>
             <div className="absolute top-0 left-0 right-0 p-6 flex justify-between items-center z-20">
                <button onClick={() => navigate(-1)} className="p-3 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-full text-white transition border border-white/20"><FaArrowLeft /></button>
             </div>
             <div className="absolute bottom-12 left-6 right-6 sm:left-12 sm:right-12 text-white z-10">
               <div className="flex items-center gap-2 mb-4">
-                <span className="px-4 py-1.5 bg-purple-600 rounded-full text-xs font-black uppercase tracking-widest">{venue.type || 'Premium Venue'}</span>
+                <span className="px-4 py-1.5 bg-night-blue rounded-full text-xs font-black uppercase tracking-widest">{venue.type || 'Premium Venue'}</span>
                 <div className="flex items-center gap-1 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-                  <FaStar className="text-yellow-400" />
-                  <span className="text-sm font-bold">{venue.rating || '4.8'}</span>
+                  {venue.rating > 0 ? (
+                    <>
+                      <FaStar className="text-[#FFD700]" />
+                      <span className="text-sm font-bold text-white">{venue.rating}</span>
+                    </>
+                  ) : (
+                    <span className="text-xs font-bold text-white uppercase tracking-widest">New</span>
+                  )}
                 </div>
               </div>
-              <h1 className="text-4xl sm:text-7xl font-black mb-4 tracking-tighter drop-shadow-2xl">{venue.name}</h1>
-              <div className="flex flex-wrap items-center gap-6 text-white/80">
-                <div className="flex items-center gap-2 text-lg"><FaMapMarkerAlt className="text-purple-500" /> <span>{venue.city}</span></div>
-                <div className="flex items-center gap-2 text-lg"><FaUsers className="text-purple-500" /> <span>Up to {venue.capacity} Guests</span></div>
+              <h1 className="text-4xl sm:text-7xl font-black mb-4 tracking-tighter drop-shadow-2xl text-white">{venue.name}</h1>
+              <div className="flex flex-wrap items-center gap-6 text-white/90">
+                <div className="flex items-center gap-2 text-lg"><FaMapMarkerAlt className="text-sand-tan" /> <span>{venue.city}</span></div>
+                <div className="flex items-center gap-2 text-lg"><FaUsers className="text-sand-tan" /> <span>Up to {venue.capacity} Guests</span></div>
               </div>
             </div>
             {venue.images.length > 1 && (
@@ -380,7 +461,7 @@ function UserVenueDetail() {
               </div>
             )}
           </>
-        ) : <div className="w-full h-full flex items-center justify-center bg-gray-900 text-white font-black text-4xl">NO IMAGES</div>}
+        ) : <div className="w-full h-full flex items-center justify-center bg-night-blue text-white font-black text-4xl">NO IMAGES</div>}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 -mt-12 relative z-30">
@@ -394,17 +475,16 @@ function UserVenueDetail() {
               <h2 className="text-3xl font-black text-gray-900 mb-6">About the Venue</h2>
               <p className="text-gray-600 text-lg leading-relaxed mb-10">{venue.description}</p>
               
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
                 {[
                   { label: 'Capacity', val: `${venue.capacity} Pax`, icon: <FaUsers /> },
-                  { label: 'Starting Price', val: `₹${venue.pricePerDay || venue.pricePerPlate || 0}/Day`, icon: <FaShoppingCart /> },
-                  { label: 'Rating', val: venue.rating || '4.8', icon: <FaStar /> },
+                  { label: 'Rating', val: venue.rating > 0 ? venue.rating : 'New', icon: <FaStar /> },
                   { label: 'Location', val: venue.city || 'Kathmandu', icon: <FaMapMarkerAlt /> }
                 ].map((stat, i) => (
-                  <div key={i} className="p-6 bg-gray-50 rounded-3xl border border-gray-100 group hover:bg-purple-50 transition duration-300">
-                    <div className="text-purple-600 mb-3 text-xl">{stat.icon}</div>
+                  <div key={i} className="p-6 bg-white rounded-3xl border border-gray-100 group hover:bg-sand-tan/10 transition duration-300">
+                    <div className="text-night-blue mb-3 text-xl">{stat.icon}</div>
                     <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">{stat.label}</p>
-                    <p className="text-sm font-black text-gray-900">{stat.val}</p>
+                    <p className="text-sm font-black text-black">{stat.val}</p>
                   </div>
                 ))}
               </div>
@@ -416,7 +496,7 @@ function UserVenueDetail() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {venue.amenities?.map((am, i) => (
                   <div key={i} className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
-                    <div className="w-2 h-2 bg-purple-600 rounded-full"></div>
+                    <div className="w-2 h-2 bg-night-blue rounded-full"></div>
                     <span className="text-sm font-bold text-gray-700">{am}</span>
                   </div>
                 ))}
@@ -463,13 +543,13 @@ function UserVenueDetail() {
                   let shadow = '';
                   
                   if (isToday) {
-                    bgColor = 'bg-white text-purple-800';
-                    border = 'border-purple-800';
+                    bgColor = 'bg-white text-night-blue';
+                    border = 'border-night-blue';
                     shadow = 'shadow-md';
                   }
 
                   if (booking) {
-                    if (booking.isManual) { bgColor = 'bg-purple-100 text-purple-700'; border = 'border-purple-500'; }
+                    if (booking.isManual) { bgColor = 'bg-sand-tan/20 text-night-blue'; border = 'border-sand-tan'; }
                     else if (booking.status === 'timely_booking') { bgColor = 'bg-blue-100 text-blue-700'; border = 'border-blue-500'; }
                     else if (booking.status === 'booked' || booking.status === 'confirmed') { bgColor = 'bg-green-100 text-green-700'; border = 'border-green-500'; }
                     else { bgColor = 'bg-amber-100 text-amber-700'; border = 'border-amber-500'; }
@@ -478,10 +558,10 @@ function UserVenueDetail() {
                   return (
                     <div 
                       key={day} 
-                      className={`h-14 flex flex-col items-center justify-center rounded-2xl font-black text-xs border-b-4 transition duration-300 ${bgColor} ${border} ${shadow} ${isPast ? 'opacity-40 grayscale-[0.5]' : 'hover:scale-105 hover:shadow-lg'}`}
+                      className={`h-14 flex flex-col items-center justify-center rounded-2xl font-black text-xs border-b-4 transition duration-300 ${bgColor} ${border} ${shadow} ${isPast ? 'opacity-40 grayscale-[0.5] blur-[2px] cursor-not-allowed' : 'hover:scale-105 hover:shadow-lg'}`}
                     >
                       <span>{day}</span>
-                      {isToday && <span className="text-[8px] mt-1 text-purple-600 uppercase">Today</span>}
+                      {isToday && <span className="text-[8px] mt-1 text-night-blue uppercase">Today</span>}
                     </div>
                   );
                 })}
@@ -489,7 +569,7 @@ function UserVenueDetail() {
 
               <div className="flex flex-wrap gap-6 justify-center p-4 bg-gray-50 rounded-2xl border border-gray-100">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-purple-100 border-b-2 border-purple-500 rounded-sm"></div>
+                  <div className="w-3 h-3 bg-sand-tan/20 border-b-2 border-sand-tan rounded-sm"></div>
                   <span className="text-[10px] font-black text-gray-400 uppercase tracking-tight">Manual</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -512,8 +592,14 @@ function UserVenueDetail() {
               <div className="flex justify-between items-center mb-10">
                 <h2 className="text-2xl font-black text-gray-900">Guest Experiences</h2>
                 <div className="flex items-center gap-2">
-                  <FaStar className="text-yellow-400" />
-                  <span className="font-black text-xl">{venue.rating || '4.8'}</span>
+                  {venue.rating > 0 ? (
+                    <>
+                      <FaStar className="text-[#FFD700]" />
+                      <span className="font-black text-xl">{venue.rating}</span>
+                    </>
+                  ) : (
+                    <span className="font-black text-xl text-gray-500">New</span>
+                  )}
                   <span className="text-gray-400 font-bold">({venue.reviews?.length || 0} reviews)</span>
                 </div>
               </div>
@@ -523,18 +609,18 @@ function UserVenueDetail() {
                   <div key={i} className="p-6 bg-gray-50 rounded-3xl border border-gray-100">
                     <div className="flex justify-between items-start mb-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-purple-800 rounded-full flex items-center justify-center text-white font-black text-xs">{(r.user?.name || 'C').charAt(0)}</div>
+                        <div className="w-10 h-10 bg-night-blue rounded-full flex items-center justify-center text-white font-black text-xs">{(r.user?.name || 'C').charAt(0)}</div>
                         <div>
                           <p className="font-black text-gray-900 text-sm">{r.user?.name || 'Customer'}</p>
                           <p className="text-[10px] text-gray-400 font-bold uppercase">{new Date(r.createdAt).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      <div className="flex text-yellow-400 text-xs">{[...Array(r.rating)].map((_, i) => <FaStar key={i} />)}</div>
+                      <div className="flex text-[#FFD700] text-xs">{[...Array(r.rating)].map((_, i) => <FaStar key={i} />)}</div>
                     </div>
                     <p className="text-gray-600 text-sm italic leading-relaxed">"{r.comment}"</p>
                   </div>
                 ))}
-                {venue.reviews?.length > 3 && <button className="w-full py-4 text-purple-800 font-black text-sm uppercase tracking-widest hover:bg-purple-50 rounded-2xl transition">View All {venue.reviews.length} Reviews</button>}
+                {venue.reviews?.length > 3 && <button className="w-full py-4 text-night-blue font-black text-sm uppercase tracking-widest hover:bg-sand-tan/10 rounded-2xl transition">View All {venue.reviews.length} Reviews</button>}
                 {venue.reviews?.length === 0 && <p className="text-center text-gray-400 py-10 font-bold italic">No reviews yet. Be the first to share your experience!</p>}
               </div>
             </div>
@@ -558,7 +644,7 @@ function UserVenueDetail() {
                           className="transition-transform hover:scale-110"
                         >
                           {star <= userRating ? (
-                            <FaStar className="w-10 h-10 text-yellow-400 drop-shadow-sm" />
+                            <FaStar className="w-10 h-10 text-[#FFD700] drop-shadow-sm" />
                           ) : (
                             <FaStar className="w-10 h-10 text-gray-100" />
                           )}
@@ -573,7 +659,7 @@ function UserVenueDetail() {
                       value={userReview}
                       onChange={(e) => setUserReview(e.target.value)}
                       placeholder="Write about the service, food, and ambiance..."
-                      className="w-full p-6 bg-gray-50 border border-transparent rounded-[2rem] focus:border-purple-800 outline-none font-bold text-sm min-h-[150px] transition"
+                      className="w-full p-6 bg-gray-50 border border-transparent rounded-[2rem] focus:border-night-blue outline-none font-bold text-sm min-h-[150px] transition"
                       required
                     ></textarea>
                   </div>
@@ -581,7 +667,7 @@ function UserVenueDetail() {
                   <button
                     type="submit"
                     disabled={reviewLoading}
-                    className="w-full py-5 bg-purple-800 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-purple-900 transition transform hover:-translate-y-1 disabled:bg-gray-200"
+                    className="w-full py-5 bg-night-blue text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-night-blue-shadow transition transform hover:-translate-y-1 disabled:bg-gray-200"
                   >
                     {reviewLoading ? 'SUBMITTING...' : 'Post My Review'}
                   </button>
@@ -685,20 +771,23 @@ function UserVenueDetail() {
                       {(!bookingData.eventDate || !bookingData.eventType || !customerEmail || !customerName) && (
                         <p className="text-[10px] text-red-500 font-black uppercase text-center mb-2 animate-pulse">Please fill all details above to enable booking</p>
                       )}
-                      <button 
-                        onClick={handleBooking} 
-                        disabled={paymentLoading || !bookingData.eventDate || !bookingData.eventType || !customerEmail || !customerName} 
-                        className="w-full py-5 bg-gray-900 text-white rounded-3xl font-black text-lg hover:bg-purple-800 disabled:bg-gray-200 disabled:text-gray-400 disabled:transform-none transition transform hover:-translate-y-1 shadow-xl shadow-gray-200"
-                      >
-                        {paymentLoading ? 'PROCESSING...' : 'PAY & BOOK'}
-                      </button>
-                      <button 
-                        onClick={handlePayLater} 
-                        disabled={paymentLoading || !bookingData.eventDate || !bookingData.eventType || !customerEmail || !customerName} 
-                        className="w-full py-5 bg-white border-2 border-gray-200 text-gray-900 rounded-3xl font-black text-lg hover:bg-gray-50 disabled:border-gray-100 disabled:text-gray-300 disabled:transform-none transition transform hover:-translate-y-1"
-                      >
-                        HOLD (5H)
-                      </button>
+                        <button 
+                          onClick={handleBooking} 
+                          disabled={paymentLoading || !bookingData.eventDate || !bookingData.eventType || !customerEmail || !customerName} 
+                          className="w-full py-5 bg-purple-pain text-freeze-purple rounded-3xl font-black text-lg hover:bg-heavy-purple disabled:bg-medium-purple disabled:text-heavy-purple disabled:transform-none transition transform hover:-translate-y-1 shadow-xl shadow-medium-purple"
+                        >
+                          {paymentLoading ? 'PROCESSING...' : (activeHold ? 'UPDATE & PAY' : 'PAY & BOOK')}
+                        </button>
+                        
+                        {!activeHold && (
+                          <button 
+                            onClick={handlePayLater} 
+                            disabled={paymentLoading || !bookingData.eventDate || !bookingData.eventType || !customerEmail || !customerName} 
+                            className="w-full py-5 bg-white border-2 border-gray-200 text-gray-900 rounded-3xl font-black text-lg hover:bg-gray-50 disabled:border-gray-100 disabled:text-gray-300 disabled:transform-none transition transform hover:-translate-y-1"
+                          >
+                            HOLD (5H)
+                          </button>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -712,17 +801,26 @@ function UserVenueDetail() {
       <div className="fixed bottom-8 left-0 right-0 flex justify-center z-[100] pointer-events-none">
         <button 
           onClick={() => setShowMenuModal(true)}
-          className="pointer-events-auto flex items-center gap-3 px-8 py-5 bg-purple-800 text-white rounded-full font-black text-sm uppercase tracking-widest shadow-2xl hover:bg-purple-900 transition-all transform hover:scale-105 active:scale-95"
+          className={`pointer-events-auto flex items-center gap-3 px-8 py-5 text-white rounded-full font-black text-sm uppercase tracking-widest shadow-2xl transition-all transform hover:scale-105 active:scale-95 ${activeHold ? 'bg-blue-600 hover:bg-blue-700' : 'bg-purple-800 hover:bg-purple-900'}`}
         >
-          <FaShoppingCart />
-          View Menu & Packages
+          {activeHold ? (
+            <>
+              <FaClock />
+              Hold Ends in: {holdTimer} • Update Order
+            </>
+          ) : (
+            <>
+              <FaShoppingCart />
+              View Menu & Packages
+            </>
+          )}
         </button>
       </div>
 
       {/* Menu & Packages Modal */}
       {showMenuModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
-          <div className="bg-white w-full max-w-5xl h-[90vh] sm:h-auto sm:max-h-[85vh] rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden flex flex-col animate-slide-up">
+        <div className="fixed inset-0 bg-purple-pain/80 backdrop-blur-md z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
+          <div className="bg-freeze-purple w-full max-w-5xl h-[90vh] sm:h-auto sm:max-h-[85vh] rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden flex flex-col animate-slide-up">
             <div className="p-8 sm:p-12 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
               <div>
                 <h2 className="text-3xl font-black text-gray-900">Customise Your Event</h2>

@@ -7,7 +7,8 @@ import {
   getAllBookings,
   cancelBooking,
   getPublicBookedDates,
-  createManualBooking
+  createManualBooking,
+  updateBooking
 } from '../controller/bookingController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 
@@ -19,6 +20,7 @@ router.get('/venue/:venueId/booked-dates', getPublicBookedDates);
 // User routes
 router.post('/', authenticate, authorize(['user']), createBooking);
 router.get('/my-bookings', authenticate, authorize(['user']), getMyBookings);
+router.patch('/:id', authenticate, authorize(['user']), updateBooking);
 router.put('/:id/cancel', authenticate, authorize(['user', 'admin']), cancelBooking);
 
 // Venue owner routes

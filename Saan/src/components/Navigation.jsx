@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { FaUser, FaHome, FaBuilding, FaInfoCircle, FaHeadset } from 'react-icons/fa';
+import { FaUser, FaHome, FaBuilding, FaInfoCircle, FaHeadset, FaCalendarAlt } from 'react-icons/fa';
 import NotificationBell from './NotificationBell';
 
 function Navigation() {
@@ -39,6 +39,7 @@ function Navigation() {
 
   const navLinks = [
     { path: '/browse-venue', icon: FaBuilding, label: 'Browse Venues' },
+    { path: '/user/my-bookings', icon: FaCalendarAlt, label: 'My Bookings' },
     { path: '/customer-inquiry', icon: FaHeadset, label: 'Support' },
     { path: '/about-us', icon: FaInfoCircle, label: 'About Us' }
   ];
@@ -51,7 +52,7 @@ function Navigation() {
   }
 
   return (
-    <nav className="fixed top-0 w-full bg-purple-800 text-white shadow-lg z-50">
+    <nav className="fixed top-0 w-full bg-night-blue text-white shadow-lg z-50">
       <div className="container mx-auto px-4 xl:px-8 2xl:px-12">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}

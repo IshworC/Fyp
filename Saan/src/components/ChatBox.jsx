@@ -136,7 +136,7 @@ export default function ChatBox({ venueId, otherUserId, title = "Chat", autoOpen
       <div className="fixed right-6 bottom-6 z-50">
         <button
           onClick={handleOpen}
-          className="relative w-16 h-16 rounded-full bg-gradient-to-r from-purple-800 to-[#c99b1a] text-white shadow-2xl flex items-center justify-center hover:from-purple-900 hover:to-[#b58810] transition-all duration-300 transform hover:scale-105"
+          className="relative w-16 h-16 rounded-full bg-gradient-to-r from-purple-pain to-ice-cold text-freeze-purple shadow-2xl flex items-center justify-center hover:from-purple-pain hover:to-medium-purple transition-all duration-300 transform hover:scale-105"
           title={title}
         >
           <FaComments className="text-xl" />
@@ -152,7 +152,7 @@ export default function ChatBox({ venueId, otherUserId, title = "Chat", autoOpen
       {open && (
         <div className="fixed right-6 bottom-24 w-[500px] h-[600px] bg-white border border-gray-200 rounded-2xl shadow-2xl z-50 flex flex-col overflow-hidden">
           {/* Header */}
-          <div className="p-4 bg-gradient-to-r from-purple-800 to-[#c99b1a] text-white rounded-t-2xl font-semibold flex justify-between items-center">
+          <div className="p-4 bg-gradient-to-r from-purple-pain to-ice-cold text-freeze-purple rounded-t-2xl font-semibold flex justify-between items-center">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                 <FaComments className="text-sm" />
@@ -184,7 +184,7 @@ export default function ChatBox({ venueId, otherUserId, title = "Chat", autoOpen
                 <div key={msg._id} className={`flex ${senderId === userId ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[75%] p-4 rounded-2xl shadow-sm ${
                     senderId === userId
-                      ? 'bg-gradient-to-r from-purple-800 to-[#c99b1a] text-white'
+                      ? 'bg-gradient-to-r from-purple-pain to-ice-cold text-freeze-purple'
                       : 'bg-white text-gray-800 border border-gray-200'
                   }`}>
                     <div className="text-sm leading-relaxed">{msg.text}</div>
@@ -230,7 +230,7 @@ export default function ChatBox({ venueId, otherUserId, title = "Chat", autoOpen
             <button
               onClick={handleSend}
               disabled={!text.trim()}
-              className="bg-gradient-to-r from-purple-800 to-[#c99b1a] text-white px-6 py-3 rounded-full hover:from-purple-900 hover:to-[#b58810] disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+              className="bg-gradient-to-r from-purple-pain to-ice-cold text-freeze-purple px-6 py-3 rounded-full hover:from-purple-pain hover:to-medium-purple disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
             >
               <FaPaperPlane className="text-sm" />
             </button>

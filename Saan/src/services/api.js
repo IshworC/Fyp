@@ -53,6 +53,17 @@ export const authAPI = {
     return response.json();
   },
 
+  googleLogin: async (credential) => {
+    const response = await fetch(`${API_URL}/auth/google`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ credential }),
+    });
+    return response.json();
+  },
+
   getCurrentUser: async (token) => {
     const response = await fetch(`${API_URL}/auth/me`, {
       method: 'GET',
@@ -71,6 +82,24 @@ export const authAPI = {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
+    });
+    return response.json();
+  },
+
+  forgotPassword: async (email) => {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    return response.json();
+  },
+
+  resetPassword: async (email, otp, newPassword) => {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp, newPassword }),
     });
     return response.json();
   },
@@ -285,6 +314,23 @@ export const bookingAPI = {
       return response.json();
     } catch (err) {
       console.error('Get bookings error:', err);
+      return { success: false, message: err.message };
+    }
+  },
+
+  updateBooking: async (token, bookingId, bookingData) => {
+    try {
+      const response = await fetch(`${API_URL}/bookings/${bookingId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(bookingData),
+      });
+      return response.json();
+    } catch (err) {
+      console.error('Update booking error:', err);
       return { success: false, message: err.message };
     }
   },

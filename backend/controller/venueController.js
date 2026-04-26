@@ -2,6 +2,7 @@ import Venue from '../models/Venue.js';
 import User from '../models/User.js';
 import Notification from '../models/Notification.js';
 import VenueRegistration from '../models/VenueRegistration.js';
+import Booking from '../models/Booking.js';
 
 // Create venue (venue owner only)
 export const createVenue = async (req, res) => {
@@ -47,7 +48,30 @@ export const createVenue = async (req, res) => {
 // Get all approved venues
 export const getApprovedVenues = async (req, res) => {
   try {
-    const venues = await Venue.find({ isApproved: true }).populate('owner', 'name email');
+    const venuesDocs = await Venue.find({ isApproved: true }).populate('owner', 'name email');
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const bookings = await Booking.find({
+      venue: { $in: venuesDocs.map(v => v._id) },
+      eventDate: { $gte: today },
+      status: { $in: ['pending', 'confirmed', 'booked', 'timely_booking'] }
+    });
+
+    const bookingsMap = {};
+    bookings.forEach(b => {
+      const dateStr = new Date(b.eventDate).toISOString().split('T')[0];
+      if (!bookingsMap[b.venue.toString()]) {
+        bookingsMap[b.venue.toString()] = [];
+      }
+      bookingsMap[b.venue.toString()].push(dateStr);
+    });
+
+    const venues = venuesDocs.map(doc => {
+      const v = doc.toObject();
+      v.bookedDates = bookingsMap[v._id.toString()] || [];
+      return v;
+    });
 
     res.status(200).json({
       success: true,

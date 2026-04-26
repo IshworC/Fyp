@@ -9,11 +9,9 @@ function AdminLayout() {
   const [userEmail, setUserEmail] = useState("");
   const [profileOpen, setProfileOpen] = useState(false);
   const dropdownRef = useRef(null);
-
-  // Notification state
+  const [notificationOpen, setNotificationOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [notificationOpen, setNotificationOpen] = useState(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const notificationRef = useRef(null);
 
@@ -294,25 +292,25 @@ function AdminLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-[#F7F8FA]">
+    <div className="min-h-screen bg-sand-tan">
       {/* ========== SIDEBAR ========== */}
-      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-[#1a1a2e] flex flex-col z-50">
+      <aside className="fixed left-0 top-0 bottom-0 w-64 bg-night-blue-shadow flex flex-col z-50 shadow-2xl">
         {/* Logo */}
         <div className="h-16 flex items-center px-6 border-b border-white/10">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-purple-800 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">S</span>
+            <div className="w-9 h-9 bg-night-blue rounded-lg flex items-center justify-center">
+              <span className="text-sand-tan font-bold text-lg">S</span>
             </div>
             <div>
               <h1 className="text-white font-semibold text-lg">SAAN</h1>
-              <p className="text-gray-400 text-[10px] leading-none">Admin Panel</p>
+              <p className="text-sand-tan text-[10px] leading-none">Admin Panel</p>
             </div>
           </div>
         </div>
 
         {/* Navigation */}
         <nav className="flex-1 px-3 py-6 overflow-y-auto">
-          <p className="px-3 mb-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider">Main Menu</p>
+          <p className="px-3 mb-3 text-[10px] font-bold text-sand-tan uppercase tracking-wider">Main Menu</p>
           <ul className="space-y-1">
             {navItems.map((item) => (
               <li key={item.label}>
@@ -323,12 +321,12 @@ function AdminLayout() {
                       onClick={() => setExpandedItem(expandedItem === item.label ? null : item.label)}
                       className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         location.pathname.includes("/registrations")
-                          ? "text-white bg-white/10"
-                          : "text-gray-400 hover:text-white hover:bg-white/5"
+                          ? "text-night-blue bg-sand-tan"
+                          : "text-white hover:bg-white/10"
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <span className={location.pathname.includes("/registrations") ? "text-purple-800" : ""}>{item.icon}</span>
+                        <span className={location.pathname.includes("/registrations") ? "text-night-blue" : "text-white"}>{item.icon}</span>
                         <span>{item.label}</span>
                       </div>
                       <svg
@@ -349,8 +347,8 @@ function AdminLayout() {
                               className={({ isActive }) =>
                                 `block px-3 py-2 rounded-lg text-sm transition-colors ${
                                   isActive
-                                    ? "text-white bg-purple-800 font-medium"
-                                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                                    ? "text-night-blue bg-sand-tan font-medium"
+                                    : "text-white/70 hover:text-white hover:bg-white/5"
                                 }`
                               }
                             >
@@ -369,14 +367,14 @@ function AdminLayout() {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
                         isActive
-                          ? "text-white bg-white/10"
-                          : "text-gray-400 hover:text-white hover:bg-white/5"
+                          ? "text-night-blue bg-sand-tan"
+                          : "text-white hover:bg-white/10"
                       }`
                     }
                   >
                     {({ isActive }) => (
                       <>
-                        <span className={isActive ? "text-purple-800" : ""}>{item.icon}</span>
+                        <span className={isActive ? "text-night-blue" : "text-white"}>{item.icon}</span>
                         <span>{item.label}</span>
                       </>
                     )}
@@ -390,19 +388,19 @@ function AdminLayout() {
         {/* Admin Profile in Sidebar */}
         <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-3 px-2 py-2">
-            <div className="w-10 h-10 bg-purple-800 rounded-full flex items-center justify-center">
-              <span className="text-white font-semibold">
+            <div className="w-10 h-10 bg-night-blue rounded-full flex items-center justify-center">
+              <span className="text-sand-tan font-semibold">
                 {userName.charAt(0).toUpperCase()}
               </span>
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-white truncate">{userName}</p>
-              <p className="text-xs text-gray-500 truncate">{userEmail}</p>
+              <p className="text-xs text-sand-tan truncate">{userEmail}</p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
+            className="w-full mt-3 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white hover:text-red-400 hover:bg-white/10 transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -529,7 +527,7 @@ function AdminLayout() {
               </div>
 
               {/* Quick Actions */}
-              <button className="px-4 py-2 bg-purple-800 text-white text-sm font-medium rounded-lg hover:bg-purple-900 transition-colors">
+              <button className="px-4 py-2 bg-night-blue text-white text-sm font-medium rounded-lg hover:bg-night-blue-shadow transition-colors">
                 Quick Actions
               </button>
             </div>

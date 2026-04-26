@@ -12,7 +12,8 @@ const config = {
     secretKey: process.env.ESEWA_SECRET_KEY || "your_secret_key",
     paymentUrl: process.env.ESEWA_PAYMENT_URL || "https://rc-epay.esewa.com.np/api/epay/main/v2/form",
     verifyUrl: process.env.ESEWA_VERIFY_URL || "https://rc-epay.esewa.com.np/api/epay/transaction/status/",
-  }
+  },
+  googleClientId: process.env.GOOGLE_CLIENT_ID || 'TEMP_GOOGLE_CLIENT_ID'
 };
 
 export default config;

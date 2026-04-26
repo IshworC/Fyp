@@ -855,34 +855,55 @@ export const approveRegistration = async (req, res) => {
         
         // Extract images from venueImages array
         const venueImages = registration.venueImages?.map(img => img.url) || [];
+
+        // Map venue type: default to 'banquet', can be updated by owner later
+        const defaultType = 'banquet';
         
         // Create venue from registration data
         const venueData = {
           name: registration.venueName || 'New Venue',
-          type: 'banquet',
+          type: defaultType,
           city: registration.location?.district || 'Kathmandu',
           address: `${registration.location?.street || ''}, Ward ${registration.location?.wardNo || ''}, ${registration.location?.municipality || ''}`,
-          capacity: registration.capacity || 500, // Use capacity from registration
-          numberOfHalls: registration.numberOfHalls || 1, // Use numberOfHalls from registration
-          pricePerDay: 1500, // Default - venue owner can update later
+          capacity: registration.capacity || 500,
+          numberOfHalls: registration.numberOfHalls || 1,
+          pricePerDay: 25000,   // Default - venue owner can update later
+          pricePerPlate: 500,   // Default per-plate price, venue owner can update
           description: `Beautiful ${registration.venueName} located in ${registration.location?.municipality || ''}. Perfect for weddings, corporate events, and celebrations.`,
-          amenities: ['AC', 'Parking', 'Catering', 'WiFi', 'Sound System'], // Default amenities
+          amenities: ['AC', 'Parking', 'Catering', 'WiFi', 'Sound System'],
           owner: registration.owner._id,
-          registration: id, // Link to registration document
+          registration: id,     // Link back to VenueRegistration for duplicate-check
           images: venueImages,
           phone: registration.phone,
-          isApproved: true // Auto-approve since registration was approved
+          isApproved: true      // Auto-approve since registration was approved
         };
 
         const newVenue = await Venue.create(venueData);
         console.log(`✅ Venue created successfully: ${newVenue.name} (ID: ${newVenue._id})`);
         
-        // Also update the registration with venue reference
+        // Update the registration with venue reference
         await VenueRegistration.findByIdAndUpdate(id, {
           $set: { venue: newVenue._id }
         });
       } else {
         console.log(`ℹ️ Venue already exists: ${existingVenue.name}`);
+        
+        // Extract images from venueImages array
+        const venueImages = registration.venueImages?.map(img => img.url) || existingVenue.images;
+        
+        const updateData = {
+          name: registration.venueName || existingVenue.name,
+          city: registration.location?.district || existingVenue.city,
+          address: `${registration.location?.street || ''}, Ward ${registration.location?.wardNo || ''}, ${registration.location?.municipality || ''}`,
+          capacity: registration.capacity || existingVenue.capacity,
+          numberOfHalls: registration.numberOfHalls || existingVenue.numberOfHalls,
+          phone: registration.phone || existingVenue.phone,
+          images: venueImages,
+          isApproved: true
+        };
+
+        await Venue.findByIdAndUpdate(existingVenue._id, updateData);
+        console.log(`✅ Existing venue updated and marked as approved: ${existingVenue.name}`);
       }
     } catch (venueError) {
       console.error('❌ Error creating venue from registration:', venueError);

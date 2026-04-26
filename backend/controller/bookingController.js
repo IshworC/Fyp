@@ -4,6 +4,72 @@ import User from '../models/User.js';
 import Message from '../models/Message.js';
 import { sendEmail, sendPayLaterEmail, sendBookingConfirmationEmail } from '../config/mailer.js';
 
+// Update booking (user only, for timely_booking status)
+export const updateBooking = async (req, res) => {
+  try {
+    const bookingId = req.params.id;
+    const { 
+      numberOfGuests, 
+      eventType, 
+      selectedMenuItems, 
+      selectedPackage, 
+      selectedAddOns, 
+      specialRequests, 
+      totalPrice 
+    } = req.body;
+
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+
+    // Check ownership
+    if (booking.user.toString() !== req.userId) {
+      return res.status(403).json({ success: false, message: 'Not authorized to update this booking' });
+    }
+
+    // Only allow updates for timely_bookings that haven't expired
+    if (booking.status !== 'timely_booking') {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Only bookings on hold can be updated. This booking status is: ' + booking.status 
+      });
+    }
+
+    if (booking.expiresAt && new Date() > new Date(booking.expiresAt)) {
+      booking.status = 'expired';
+      await booking.save();
+      return res.status(400).json({ success: false, message: 'Hold has expired' });
+    }
+
+    // Update fields
+    if (numberOfGuests) booking.numberOfGuests = numberOfGuests;
+    if (eventType) booking.eventType = eventType;
+    if (selectedMenuItems) booking.selectedMenuItems = selectedMenuItems;
+    if (selectedPackage) booking.selectedPackage = selectedPackage;
+    if (selectedAddOns) booking.selectedAddOns = selectedAddOns;
+    if (specialRequests) booking.specialRequests = specialRequests;
+    if (totalPrice) booking.totalPrice = totalPrice;
+
+    booking.updatedAt = Date.now();
+    await booking.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Booking updated successfully',
+      booking
+    });
+  } catch (error) {
+    console.error('Update booking error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating booking',
+      error: error.message
+    });
+  }
+};
+
 // Create booking (user only)
 export const createBooking = async (req, res) => {
   try {

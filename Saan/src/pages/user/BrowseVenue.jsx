@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Navigation from "../../components/Navigation";
 import { 
   FaSearch, 
@@ -15,6 +15,8 @@ import { venueAPI, BASE_URL, getImageUrl } from "../../services/api";
 
 function BrowseVenue() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const initialFilters = location.state?.filters || {};
   const [venues, setVenues] = useState([]);
   const [filteredVenues, setFilteredVenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -22,10 +24,9 @@ function BrowseVenue() {
   const [locations, setLocations] = useState([]);
   const [filters, setFilters] = useState({
     search: "",
-    location: "",
-    type: "",
-    minCapacity: "",
-    maxPrice: ""
+    location: initialFilters.location || "",
+    type: initialFilters.eventType || "",
+    date: initialFilters.date || ""
   });
 
   useEffect(() => {
@@ -66,26 +67,27 @@ function BrowseVenue() {
     }
 
     if (filters.type) {
-      filtered = filtered.filter(v => v.type === filters.type);
+      filtered = filtered.filter(v =>
+        (v.type || '').toLowerCase() === filters.type.toLowerCase()
+      );
     }
 
-    if (filters.maxPrice) {
-      filtered = filtered.filter(v => v.pricePerPlate <= parseInt(filters.maxPrice));
-    }
-
-    if (filters.minCapacity) {
-      filtered = filtered.filter(v => v.capacity >= parseInt(filters.minCapacity));
+    if (filters.date) {
+      const dateStr = new Date(filters.date).toISOString().split('T')[0];
+      filtered = filtered.filter(v => {
+        return !(v.bookedDates || []).includes(dateStr);
+      });
     }
 
     setFilteredVenues(filtered);
   }, [filters, venues]);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-sand-tan pb-20">
       <Navigation />
       
       {/* Top Filter Section */}
-      <div className="bg-white border-b sticky top-16 z-30 shadow-sm">
+      <div className="bg-white border-b sticky top-[64px] z-30 shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
           <div className="flex flex-col md:flex-row gap-4 items-center">
             <div className="relative flex-1 w-full">
@@ -122,8 +124,8 @@ function BrowseVenue() {
               </select>
 
               <button 
-                onClick={() => setFilters({ search: '', location: '', type: '', minCapacity: '', maxPrice: '' })}
-                className="p-4 bg-purple-100 text-purple-800 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-purple-200 transition"
+                onClick={() => setFilters({ search: '', location: '', type: '', date: '' })}
+                className="p-4 bg-night-blue text-white rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-black transition shadow-lg"
               >
                 Reset
               </button>
@@ -132,33 +134,23 @@ function BrowseVenue() {
 
           <div className="mt-4 flex flex-wrap gap-4 overflow-x-auto no-scrollbar pb-2">
             <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl">
-               <span className="text-[10px] font-black text-gray-400 uppercase">Min Capacity:</span>
+               <span className="text-[10px] font-black text-gray-400 uppercase">Date:</span>
                <input 
-                 type="number" 
-                 placeholder="0" 
-                 className="w-20 bg-transparent border-none outline-none font-bold text-sm"
-                 value={filters.minCapacity}
-                 onChange={e => setFilters({...filters, minCapacity: e.target.value})}
-               />
-            </div>
-            <div className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-xl">
-               <span className="text-[10px] font-black text-gray-400 uppercase">Max Price:</span>
-               <input 
-                 type="number" 
-                 placeholder="Any" 
-                 className="w-20 bg-transparent border-none outline-none font-bold text-sm"
-                 value={filters.maxPrice}
-                 onChange={e => setFilters({...filters, maxPrice: e.target.value})}
+                 type="date" 
+                 className="w-auto bg-transparent border-none outline-none font-bold text-sm text-black"
+                 value={filters.date}
+                 min={new Date().toISOString().split('T')[0]}
+                 onChange={e => setFilters({...filters, date: e.target.value})}
                />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 mt-6">
         <div className="mb-10">
           <h1 className="text-4xl font-black text-gray-900 tracking-tighter">Discover Venues</h1>
-          <p className="text-gray-400 font-bold mt-2 uppercase text-[10px] tracking-widest">Found {filteredVenues.length} premium spaces for you</p>
+          <p className="text-night-blue font-bold mt-2 uppercase text-[10px] tracking-widest">Found {filteredVenues.length} premium spaces for you</p>
         </div>
 
         {loading ? (
@@ -174,7 +166,7 @@ function BrowseVenue() {
                 onClick={() => navigate(`/venue/${venue._id}`)}
                 className="group bg-white rounded-[2.5rem] overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 cursor-pointer border border-gray-100 transform hover:-translate-y-2"
               >
-                <div className="relative h-64 overflow-hidden">
+                <div className="relative h-80 overflow-hidden">
                   {venue.images?.length > 0 ? (
                     <img 
                       src={getImageUrl(venue.images[0])} 
@@ -188,14 +180,20 @@ function BrowseVenue() {
                     <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-gray-900 shadow-sm">{venue.type}</span>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent text-white">
-                     <div className="flex items-center gap-1 text-yellow-400 text-sm">
-                       <FaStar /> <span className="font-black text-white">{venue.rating || '4.8'}</span>
-                     </div>
+                     {venue.rating > 0 ? (
+                       <div className="flex items-center gap-1 text-[#FFD700] text-sm">
+                         <FaStar /> <span className="font-black text-white">{venue.rating}</span>
+                       </div>
+                     ) : (
+                       <div className="flex items-center gap-1 text-white/90 text-[10px] uppercase tracking-widest font-black">
+                         <span>New Venue</span>
+                       </div>
+                     )}
                   </div>
                 </div>
 
                 <div className="p-8">
-                  <h3 className="text-2xl font-black text-gray-900 mb-2 group-hover:text-purple-800 transition">{venue.name}</h3>
+                  <h3 className="text-2xl font-black text-gray-900 mb-2 group-hover:text-night-blue transition">{venue.name}</h3>
                   <div className="flex items-center gap-2 text-gray-400 mb-6 text-sm font-bold">
                     <FaMapMarkerAlt className="text-purple-600" />
                     <span>{venue.city || venue.location}</span>
@@ -203,14 +201,10 @@ function BrowseVenue() {
                   
                   <div className="flex justify-between items-center pt-6 border-t border-gray-50">
                     <div>
-                      <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Price per plate</p>
-                      <p className="text-xl font-black text-gray-900">₹{venue.pricePerPlate}</p>
-                    </div>
-                    <div className="text-right">
                        <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mb-1">Capacity</p>
                        <div className="flex items-center gap-2 text-gray-900 font-black">
                          <FaUsers className="text-purple-600" />
-                         <span>{venue.capacity}</span>
+                         <span>Up to {venue.capacity} Pax</span>
                        </div>
                     </div>
                   </div>

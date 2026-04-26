@@ -6,6 +6,7 @@ import BrowseVenue from './pages/user/BrowseVenue';
 import UserVenueDetail from './pages/user/UserVenueDetail';
 import CustomerInquiry from './pages/user/CustomerInquiry';
 import UserHome from './pages/user/UserHome';
+import UserBookings from './pages/user/UserBookings';
 
 // Payment imports
 import PaymentSuccess from './pages/user/PaymentSuccess';
@@ -89,6 +90,18 @@ function App() {
                 <>
                   <Navigation />
                   <UserHome />
+                </>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/user/my-bookings"
+            element={
+              <ProtectedRoute allowedRoles={['user']}>
+                <>
+                  <Navigation />
+                  <UserBookings />
                 </>
               </ProtectedRoute>
             }
