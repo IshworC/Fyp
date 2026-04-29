@@ -13,7 +13,7 @@ import {
   updateVenueGallery
 } from '../controller/venueController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
-import { uploadMultipleFiles, handleUploadError } from '../middleware/upload.js';
+import { uploadMultipleFiles, handleUploadError, uploadAdminManualRegistration } from '../middleware/upload.js';
 
 const router = express.Router();
 
@@ -21,7 +21,7 @@ const router = express.Router();
 router.get('/approved', getApprovedVenues);
 
 // Protected routes for venue owners (must come before :id route)
-router.post('/', authenticate, authorize(['venue-owner']), createVenue);
+router.post('/', authenticate, authorize(['venue-owner', 'admin']), uploadAdminManualRegistration, createVenue, handleUploadError);
 router.get('/owner/my-venues', authenticate, authorize(['venue-owner']), getMyVenues);
 
 // Parameterized routes for specific venues

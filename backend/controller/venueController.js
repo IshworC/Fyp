@@ -4,19 +4,36 @@ import Notification from '../models/Notification.js';
 import VenueRegistration from '../models/VenueRegistration.js';
 import Booking from '../models/Booking.js';
 
-// Create venue (venue owner only)
+// Create venue (venue owner only or Admin Manual Registration)
 export const createVenue = async (req, res) => {
   try {
-    // Check if user is venue owner
-    if (req.userRole !== 'venue-owner') {
-      return res.status(403).json({
-        success: false,
-        message: 'Only venue owners can create venues'
-      });
+    if (req.userRole !== 'venue-owner' && req.userRole !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Unauthorized' });
     }
 
-    const { name, type, city, address, capacity, pricePerDay, description, amenities } = req.body;
+    let { name, type, city, address, capacity, pricePerDay, pricePerPlate, description, amenities, ownerId, phone, location } = req.body;
 
+    // Parse JSON fields if they are strings (from FormData)
+    if (typeof amenities === 'string') try { amenities = JSON.parse(amenities); } catch (e) { amenities = []; }
+    if (typeof location === 'string') try { location = JSON.parse(location); } catch (e) { location = {}; }
+
+    const venueOwner = req.userRole === 'admin' ? (ownerId || req.userId) : req.userId;
+
+    // 1. Handle Files
+    const images = req.files?.images ? req.files.images.map(f => `/uploads/venues/${f.filename}`) : [];
+    
+    const getDocUrl = (field) => req.files?.[field]?.[0] ? `/uploads/documents/${req.files[field][0].filename}` : null;
+    const getProfileUrl = () => req.files?.profileImage?.[0] ? `/uploads/profiles/${req.files.profileImage[0].filename}` : null;
+
+    const docUrls = {
+      citizenshipFront: getDocUrl('citizenshipFront'),
+      citizenshipBack: getDocUrl('citizenshipBack'),
+      businessRegistration: getDocUrl('businessRegistration'),
+      panCard: getDocUrl('panCard'),
+      profileImage: getProfileUrl()
+    };
+
+    // 2. Create Venue Record
     const venue = await Venue.create({
       name,
       type,
@@ -24,26 +41,64 @@ export const createVenue = async (req, res) => {
       address,
       capacity,
       pricePerDay,
+      pricePerPlate: pricePerPlate || 500,
       description,
       amenities: amenities || [],
-      owner: req.userId,
-      isApproved: false
+      owner: venueOwner,
+      images,
+      isApproved: req.userRole === 'admin'
     });
+
+    // 3. Create or Update VenueRegistration Record
+    const regData = {
+      owner: venueOwner,
+      phone: phone || "9800000000",
+      profileImage: { url: docUrls.profileImage },
+      venueName: name,
+      venueImages: images.map(url => ({ url })),
+      documents: {
+        citizenshipFront: { url: docUrls.citizenshipFront },
+        citizenshipBack: { url: docUrls.citizenshipBack },
+        businessRegistration: { url: docUrls.businessRegistration },
+        panCard: { url: docUrls.panCard }
+      },
+      location: location.province ? location : { province: 'N/A', district: 'N/A', municipality: city || 'N/A', wardNo: '0', street: address || 'N/A' },
+      registrationStatus: req.userRole === 'admin' ? 'APPROVED' : 'PENDING',
+      venue: venue._id,
+      submittedAt: new Date(),
+      approvedAt: req.userRole === 'admin' ? new Date() : null
+    };
+
+    if (req.userRole === 'admin') {
+      const approvedStatus = { status: 'APPROVED', reviewedAt: new Date(), reviewedBy: req.userId };
+      regData.phoneStatus = approvedStatus;
+      regData.profileImageStatus = approvedStatus;
+      regData.venueNameStatus = approvedStatus;
+      regData.venueImagesStatus = approvedStatus;
+      regData.locationStatus = approvedStatus;
+      regData.documents.citizenshipFrontStatus = approvedStatus;
+      regData.documents.citizenshipBackStatus = approvedStatus;
+      regData.documents.businessRegistrationStatus = approvedStatus;
+      regData.documents.panCardStatus = approvedStatus;
+    }
+
+    await VenueRegistration.findOneAndUpdate(
+      { owner: venueOwner },
+      regData,
+      { upsert: true, new: true }
+    );
 
     res.status(201).json({
       success: true,
-      message: 'Venue created successfully. Awaiting admin approval.',
+      message: req.userRole === 'admin' ? 'Venue fully registered and approved' : 'Venue created, awaiting verification',
       venue
     });
   } catch (error) {
     console.error('Create venue error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Error creating venue',
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: 'Error creating venue', error: error.message });
   }
 };
+
 
 // Get all approved venues
 export const getApprovedVenues = async (req, res) => {
@@ -474,6 +529,28 @@ export const updateVenueGallery = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error updating gallery',
+      error: error.message
+    });
+  }
+};
+
+// Get all venues (admin only)
+export const getAllVenuesForAdmin = async (req, res) => {
+  try {
+    const venues = await Venue.find()
+      .populate('owner', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: venues.length,
+      venues
+    });
+  } catch (error) {
+    console.error('Get all venues admin error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching all venues',
       error: error.message
     });
   }

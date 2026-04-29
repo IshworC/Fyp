@@ -25,6 +25,7 @@ import notificationRoute from './route/notificationRoute.js';
 import contactRoute from './route/contactRoute.js';
 import menuRoute from './route/menuRoute.js';
 import packageRoute from './route/packageRoute.js';
+import reportRoute from './route/reportRoute.js';
 import esewaRoute from './route/esewa.routes.js';
 import createChatRouter from './route/chatRoute.js';
 import initCronJobs from './jobs/cronJob.js';
@@ -69,6 +70,7 @@ app.use('/api/notifications', notificationRoute);
 app.use('/api/contact', contactRoute);
 app.use('/api/menus', menuRoute);
 app.use('/api/packages', packageRoute);
+app.use('/api/reports', reportRoute);
 app.use('/api/esewa', esewaRoute);
 
 // Create HTTP server and attach Socket.IO

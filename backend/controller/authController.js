@@ -1,10 +1,12 @@
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import VenueRegistration from '../models/VenueRegistration.js';
 import Otp from '../models/Otp.js';
 import config from '../config/config.js';
 import { sendOtpEmail } from '../config/mailer.js';
 import { OAuth2Client } from 'google-auth-library';
+import mongoose from 'mongoose';
 
 // Register new user or venue owner
 export const register = async (req, res) => {
@@ -288,12 +290,21 @@ export const getAllUsers = async (req, res) => {
       });
     }
 
-    const users = await User.find().select('-password');
+    const users = await User.find().select('-password').lean();
+    
+    // For each user with role 'venue-owner', fetch their registration data
+    const usersWithReg = await Promise.all(users.map(async (user) => {
+      if (user.role === 'venue-owner') {
+        const registration = await VenueRegistration.findOne({ owner: user._id }).select('registrationStatus documents profileImage venueName');
+        return { ...user, registration };
+      }
+      return user;
+    }));
 
     res.status(200).json({
       success: true,
-      count: users.length,
-      users
+      count: usersWithReg.length,
+      users: usersWithReg
     });
   } catch (error) {
     console.error('Get all users error:', error);

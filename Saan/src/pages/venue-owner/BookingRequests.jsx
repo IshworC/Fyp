@@ -139,7 +139,10 @@ function BookingRequests() {
                 <div className="flex items-center gap-3">
                   <FaClock className="text-yellow-600 text-xl" />
                   <div>
-                    <h3 className="font-semibold text-gray-900 text-lg">{booking.user?.name || "Guest"}</h3>
+                    <div className="flex justify-between items-start min-w-[200px]">
+                      <h3 className="font-semibold text-gray-900 text-lg">{booking.user?.name || "Guest"}</h3>
+                      <span className="text-xs font-black text-gray-400 uppercase">#{booking._id.slice(-6)}</span>
+                    </div>
                     <p className="text-sm text-yellow-700 font-medium uppercase">Pending</p>
                   </div>
                 </div>

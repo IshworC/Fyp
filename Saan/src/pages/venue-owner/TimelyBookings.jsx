@@ -99,7 +99,10 @@ function TimelyBookings() {
                       {booking.user?.name?.charAt(0) || "G"}
                     </div>
                     <div>
-                      <h3 className="text-xl font-black text-gray-900">{booking.user?.name || "Guest"}</h3>
+                      <div className="flex justify-between items-start w-full">
+                        <h3 className="text-xl font-black text-gray-900">{booking.user?.name || "Guest"}</h3>
+                        <span className="text-xs font-black text-gray-400 uppercase ml-4">#{booking._id.slice(-6)}</span>
+                      </div>
                       <p className="text-sm text-gray-500 font-bold uppercase tracking-widest">{booking.eventType}</p>
                     </div>
                   </div>

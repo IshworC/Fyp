@@ -16,7 +16,11 @@ import PaymentFailure from './pages/user/PaymentFailure';
 import AdminLayout from './pages/admin/AdminLayout';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import RegistrationList from './pages/admin/RegistrationList';
-import { UsersPage, VenuesPage, BookingsPage, ReportsPage, SettingsPage } from './pages/admin/PlaceholderPages';
+import AdminUsers from './pages/admin/AdminUsers';
+import AdminVenues from './pages/admin/AdminVenues';
+import AdminBookings from './pages/admin/AdminBookings';
+import AdminReports from './pages/admin/AdminReports';
+import { SettingsPage } from './pages/admin/PlaceholderPages';
 
 // Venue Owner imports
 import VenueOwnerLayout from './pages/venue-owner/VenueOwnerLayout';
@@ -176,10 +180,10 @@ function App() {
             <Route path="registrations/under-review" element={<RegistrationList />} />
             <Route path="registrations/approved" element={<RegistrationList />} />
             <Route path="registrations/rejected" element={<RegistrationList />} />
-            <Route path="users" element={<UsersPage />} />
-            <Route path="venues" element={<VenuesPage />} />
-            <Route path="bookings" element={<BookingsPage />} />
-            <Route path="reports" element={<ReportsPage />} />
+            <Route path="users" element={<AdminUsers />} />
+            <Route path="venues" element={<AdminVenues />} />
+            <Route path="bookings" element={<AdminBookings />} />
+            <Route path="reports" element={<AdminReports />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 

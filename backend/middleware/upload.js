@@ -85,6 +85,16 @@ export const uploadRegistrationFiles = upload.fields([
   { name: 'panCard', maxCount: 1 }
 ]);
 
+// Admin Manual Registration - handles both gallery and documents
+export const uploadAdminManualRegistration = upload.fields([
+  { name: 'images', maxCount: 10 },
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'citizenshipFront', maxCount: 1 },
+  { name: 'citizenshipBack', maxCount: 1 },
+  { name: 'businessRegistration', maxCount: 1 },
+  { name: 'panCard', maxCount: 1 }
+]);
+
 // Single file upload middleware
 export const uploadSingleFile = (fieldName) => upload.single(fieldName);
 

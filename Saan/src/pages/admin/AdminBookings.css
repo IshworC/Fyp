@@ -1,0 +1,58 @@
+.admin-calendar-wrapper .react-calendar {
+  width: 100%;
+  background: white;
+  border: none;
+  font-family: inherit;
+}
+
+.admin-calendar-wrapper .react-calendar__navigation {
+  margin-bottom: 1.5rem;
+}
+
+.admin-calendar-wrapper .react-calendar__navigation button {
+  font-weight: 900;
+  color: #2d545e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+}
+
+.admin-calendar-wrapper .react-calendar__month-view__weekdays {
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: 0.6rem;
+  color: #e1b382;
+  margin-bottom: 1rem;
+}
+
+.admin-calendar-wrapper .react-calendar__tile {
+  padding: 1rem 0.5rem;
+  font-weight: 700;
+  color: #2d545e;
+  border-radius: 1rem;
+  transition: all 0.2s;
+}
+
+.admin-calendar-wrapper .react-calendar__tile:hover {
+  background-color: #f0f4f5 !important;
+}
+
+.admin-calendar-wrapper .react-calendar__tile--now {
+  background: #e1b38220 !important;
+  color: #e1b382 !important;
+}
+
+.admin-calendar-wrapper .react-calendar__tile--active {
+  background: #2d545e !important;
+  color: white !important;
+}
+
+.admin-calendar-wrapper .booked-date {
+  background: #2d545e !important;
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(45, 84, 94, 0.3);
+}
+
+.admin-calendar-wrapper .react-calendar__month-view__days__day--neighboringMonth {
+  color: #cbd5e1 !important;
+}

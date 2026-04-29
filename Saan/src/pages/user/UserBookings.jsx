@@ -223,7 +223,6 @@ function UserBookings() {
                       <div>
                         <div className="flex justify-between items-start mb-2">
                           <h3 className="text-xl font-black text-night-blue-shadow group-hover:text-night-blue transition">{booking.venue?.name || 'Unknown Venue'}</h3>
-                          <p className="text-xs font-black text-gray-400 uppercase">#{booking._id.slice(-6)}</p>
                         </div>
                         
                         <div className="space-y-3 mb-6">

@@ -679,6 +679,73 @@ export const adminVenueRegistrationAPI = {
   },
 };
 
+// Admin Management API calls
+export const adminAPI = {
+  getAllUsers: async (token) => {
+    const response = await fetch(`${API_URL}/auth/users`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  getAllVenues: async (token) => {
+    const response = await fetch(`${API_URL}/venues`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  deleteVenue: async (token, id) => {
+    const response = await fetch(`${API_URL}/venues/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  createVenueManually: async (token, formData) => {
+    const response = await fetch(`${API_URL}/venues`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    return response.json();
+  },
+};
+
+// Admin Reporting API calls
+export const reportAPI = {
+  getDashboardStats: async (token) => {
+    const response = await fetch(`${API_URL}/reports/dashboard`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+
+  getVenuePerformance: async (token) => {
+    const response = await fetch(`${API_URL}/reports/venue-performance`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    return response.json();
+  },
+};
+
 // Notification API calls
 export const notificationAPI = {
   // Get notifications

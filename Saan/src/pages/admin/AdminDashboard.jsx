@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { adminVenueRegistrationAPI, bookingAPI, menuAPI, packageAPI } from "../../services/api";
+import { adminVenueRegistrationAPI, bookingAPI, menuAPI, packageAPI, reportAPI } from "../../services/api";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -21,48 +21,36 @@ function AdminDashboard() {
       try {
         const token = localStorage.getItem("token");
         
-        // Fetch all registrations
-        const registrationResponse = await adminVenueRegistrationAPI.getAllRegistrations(token);
-        const allRegistrations = registrationResponse.registrations || [];
+        // Use the new consolidated report API
+        const { data: reportData, success } = await reportAPI.getDashboardStats(token);
         
-        const pendingCount = allRegistrations.filter(r => r.registrationStatus === 'PENDING').length;
-        const approvedVenues = allRegistrations.filter(r => r.registrationStatus === 'APPROVED').length;
+        if (success) {
+          const totalRev = reportData.revenueTrends.reduce((acc, curr) => acc + curr.revenue, 0);
+          const totalBookings = reportData.revenueTrends.reduce((acc, curr) => acc + curr.bookings, 0);
+          const totalUsers = reportData.userDistribution.reduce((acc, curr) => acc + curr.value, 0);
+          const pendingRegs = reportData.registrationStats.find(r => r._id === 'PENDING')?.count || 0;
+          const approvedVenues = reportData.registrationStats.find(r => r._id === 'APPROVED')?.count || 0;
+          const totalVenues = reportData.registrationStats.reduce((acc, curr) => acc + curr.count, 0);
 
-        // Get total bookings (sum from all venues)
-        let totalBookings = 0;
-        for (const reg of allRegistrations) {
-          if (reg.venue) {
-            try {
-              const bookingsResponse = await bookingAPI.getVenueBookings(token, reg.venue?._id || reg.venue);
-              totalBookings += (bookingsResponse.bookings || []).length;
-            } catch (error) {
-              // Skip if error fetching for this venue
-            }
-          }
-        }
+          setStats({
+            totalUsers,
+            totalVenues,
+            totalBookings,
+            pendingRegistrations: pendingRegs,
+            revenue: totalRev,
+            activeVenues: approvedVenues,
+          });
 
-        setStats({
-          totalUsers: 0, // Would need user API
-          totalVenues: allRegistrations.length,
-          totalBookings: totalBookings,
-          pendingRegistrations: pendingCount,
-          revenue: 0, // Would need payment API
-          activeVenues: approvedVenues,
-        });
-
-        // Set recent registrations (last 5)
-        const recent = allRegistrations
-          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-          .slice(0, 5)
-          .map(reg => ({
+          // Map recent registrations
+          const recent = reportData.recentRegistrations.map(reg => ({
             id: reg._id,
             venueName: reg.venueName || 'N/A',
             owner: reg.owner?.name || 'Unknown',
             status: reg.registrationStatus || 'PENDING',
             date: new Date(reg.createdAt).toLocaleDateString()
           }));
-
-        setRecentRegistrations(recent);
+          setRecentRegistrations(recent);
+        }
       } catch (error) {
         console.error("Error loading stats:", error);
       } finally {
