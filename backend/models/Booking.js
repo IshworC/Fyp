@@ -30,7 +30,8 @@ const bookingSchema = new mongoose.Schema({
     itemId: String,
     itemName: String,
     price: Number,
-    quantity: Number
+    quantity: Number,
+    category: String
   }],
   selectedPackage: {
     packageId: String,

@@ -275,7 +275,7 @@ export const deleteMenuItem = async (req, res) => {
     }
 
     // Remove item
-    menu.items.id(itemId).remove();
+    menu.items.pull(itemId);
     await menu.save();
 
     res.status(200).json({

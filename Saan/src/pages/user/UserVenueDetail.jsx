@@ -4,7 +4,7 @@ import { venueAPI, menuAPI, packageAPI, bookingAPI, esewaAPI, BASE_URL, getImage
 
 
 import ChatBox from '../../components/ChatBox';
-import { FaArrowLeft, FaPhone, FaEnvelope, FaMapMarkerAlt, FaShoppingCart, FaPlus, FaMinus, FaChevronLeft, FaChevronRight, FaTimes, FaStar, FaStarHalfAlt, FaUsers, FaCheckCircle, FaClock } from 'react-icons/fa';
+import { FaArrowLeft, FaPhone, FaEnvelope, FaMapMarkerAlt, FaShoppingCart, FaPlus, FaMinus, FaChevronLeft, FaChevronRight, FaTimes, FaStar, FaStarHalfAlt, FaUsers, FaCheckCircle, FaClock, FaCheck } from 'react-icons/fa';
 
 function UserVenueDetail() {
   const { venueId } = useParams();
@@ -32,6 +32,7 @@ function UserVenueDetail() {
   const [autoOpenChat, setAutoOpenChat] = useState(false);
 
   const [selectedTab, setSelectedTab] = useState('overview');
+  const [modalTab, setModalTab] = useState('packages');
   const [numberOfGuests, setNumberOfGuests] = useState(50);
   const [selectedItems, setSelectedItems] = useState({});
   const [galleryImageIndex, setGalleryImageIndex] = useState(0);
@@ -252,7 +253,8 @@ function UserVenueDetail() {
             itemId: item._id,
             itemName: item.name,
             price: item.pricePerPlate,
-            quantity: selectedItems[key]
+            quantity: selectedItems[key],
+            category: item.category
           });
         }
       }
@@ -403,17 +405,15 @@ function UserVenueDetail() {
     }
   };
 
-  const handleSelectItem = (menuId, itemId) => {
-    const key = `${menuId}-${itemId}`;
-    setSelectedItems(prev => ({ ...prev, [key]: (prev[key] || 0) + 1 }));
-  };
-
-  const handleDeselectItem = (menuId, itemId) => {
+  const handleToggleItem = (menuId, itemId) => {
     const key = `${menuId}-${itemId}`;
     setSelectedItems(prev => {
       const updated = { ...prev };
-      if (updated[key] > 1) updated[key]--;
-      else delete updated[key];
+      if (updated[key]) {
+        delete updated[key];
+      } else {
+        updated[key] = 1;
+      }
       return updated;
     });
   };
@@ -821,7 +821,7 @@ function UserVenueDetail() {
       {showMenuModal && (
         <div className="fixed inset-0 bg-purple-pain/80 backdrop-blur-md z-[200] flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="bg-freeze-purple w-full max-w-5xl h-[90vh] sm:h-auto sm:max-h-[85vh] rounded-t-[3rem] sm:rounded-[3rem] overflow-hidden flex flex-col animate-slide-up">
-            <div className="p-8 sm:p-12 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
+            <div className="p-8 sm:p-12 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-20">
               <div>
                 <h2 className="text-3xl font-black text-gray-900">Customise Your Event</h2>
                 <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest mt-1">Select Menu & Package options</p>
@@ -829,69 +829,106 @@ function UserVenueDetail() {
               <button onClick={() => setShowMenuModal(false)} className="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full text-gray-400 hover:text-red-500 transition"><FaTimes size={20} /></button>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 sm:p-12 space-y-12 no-scrollbar">
+            <div className="px-8 sm:px-12 pt-6 pb-0 border-b border-gray-100 flex gap-8 sticky top-[104px] z-10 bg-white/90 backdrop-blur-md">
+              <button 
+                onClick={() => setModalTab('packages')}
+                className={`pb-4 text-sm font-black uppercase tracking-widest transition-colors border-b-4 ${modalTab === 'packages' ? 'border-night-blue text-night-blue' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+              >
+                Venue Packages
+              </button>
+              <button 
+                onClick={() => setModalTab('menus')}
+                className={`pb-4 text-sm font-black uppercase tracking-widest transition-colors border-b-4 ${modalTab === 'menus' ? 'border-night-blue text-night-blue' : 'border-transparent text-gray-400 hover:text-gray-600'}`}
+              >
+                Catering Menus
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 sm:p-12 no-scrollbar">
               {/* Packages Selection */}
-              <section>
-                <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3"><div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-sm">P</div> Venue Packages</h3>
-                {packages.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {packages.map(pkg => (
-                      <div 
-                        key={pkg._id} 
-                        onClick={() => setBookingData(p => ({ ...p, selectedPackage: pkg._id }))}
-                        className={`p-8 rounded-[2.5rem] border-4 transition-all cursor-pointer group relative overflow-hidden ${bookingData.selectedPackage === pkg._id ? 'border-purple-800 bg-purple-50/50' : 'border-gray-100 bg-white hover:border-purple-200'}`}
-                      >
-                        {bookingData.selectedPackage === pkg._id && <div className="absolute top-0 right-0 bg-purple-800 text-white px-6 py-2 rounded-bl-3xl font-black text-[10px] tracking-widest">SELECTED</div>}
-                        <h4 className="text-2xl font-black text-gray-900 mb-2">{pkg.name}</h4>
-                        <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">{pkg.type}</p>
-                        <div className="mb-8">
-                          <p className="text-4xl font-black text-purple-800">₹{pkg.basePrice}<span className="text-sm text-gray-400 font-bold">/Guest</span></p>
+              {modalTab === 'packages' && (
+                <section className="animate-fade-in">
+                  {packages.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {packages.map(pkg => (
+                        <div 
+                          key={pkg._id} 
+                          onClick={() => setBookingData(p => ({ ...p, selectedPackage: pkg._id }))}
+                          className={`p-8 rounded-[2.5rem] border-4 transition-all cursor-pointer group relative overflow-hidden ${bookingData.selectedPackage === pkg._id ? 'border-night-blue bg-sand-tan/10' : 'border-gray-100 bg-white hover:border-sand-tan/30'}`}
+                        >
+                          {bookingData.selectedPackage === pkg._id && <div className="absolute top-0 right-0 bg-night-blue text-white px-6 py-2 rounded-bl-3xl font-black text-[10px] tracking-widest">SELECTED</div>}
+                          <h4 className="text-2xl font-black text-gray-900 mb-2">{pkg.name}</h4>
+                          <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mb-6">{pkg.type}</p>
+                          <ul className="space-y-3">
+                            {pkg.features?.map((f, i) => <li key={i} className="flex items-center gap-3 text-sm text-gray-600 font-medium"><div className="w-1.5 h-1.5 bg-sand-tan rounded-full"></div>{f}</li>)}
+                          </ul>
                         </div>
-                        <ul className="space-y-3">
-                          {pkg.features?.map((f, i) => <li key={i} className="flex items-center gap-3 text-sm text-gray-600 font-medium"><div className="w-1.5 h-1.5 bg-purple-600 rounded-full"></div>{f}</li>)}
-                        </ul>
-                      </div>
-                    ))}
-                  </div>
-                ) : <div className="p-12 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 text-center"><p className="text-gray-400 font-bold italic">Package system is not available for this venue</p></div>}
-              </section>
+                      ))}
+                    </div>
+                  ) : <div className="p-12 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 text-center"><p className="text-gray-400 font-bold italic">Package system is not available for this venue</p></div>}
+                </section>
+              )}
 
               {/* Menus Selection */}
-              <section>
-                <h3 className="text-xl font-black text-gray-900 mb-8 flex items-center gap-3"><div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 text-sm">M</div> Catering Menus</h3>
-                {menus.length > 0 ? (
-                  <div className="space-y-8">
-                    {menus.map(menu => (
-                      <div key={menu._id} className="bg-gray-50 rounded-[2.5rem] p-8 border border-gray-100">
-                        <h4 className="text-xl font-black text-gray-900 mb-6">{menu.name}</h4>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                          {menu.items?.map(item => (
-                            <div key={item._id} className="p-6 bg-white rounded-3xl flex justify-between items-center shadow-sm border border-transparent hover:border-purple-200 transition">
-                              <div>
-                                <p className="font-bold text-gray-900">{item.name}</p>
-                                <p className="text-xs text-purple-700 font-black">₹{item.pricePerPlate}/Plate</p>
-                              </div>
-                              <div className="flex items-center gap-3 bg-gray-50 p-2 rounded-2xl">
-                                <button onClick={() => handleDeselectItem(menu._id, item._id)} className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-red-500 hover:scale-110 transition"><FaMinus size={10} /></button>
-                                <span className="font-black w-5 text-center text-sm">{selectedItems[`${menu._id}-${item._id}`] || 0}</span>
-                                <button onClick={() => handleSelectItem(menu._id, item._id)} className="w-8 h-8 bg-white rounded-xl flex items-center justify-center text-green-500 hover:scale-110 transition"><FaPlus size={10} /></button>
-                              </div>
+              {modalTab === 'menus' && (
+                <section className="animate-fade-in">
+                  {menus.length > 0 ? (
+                    <div className="space-y-12">
+                      {menus.map(menu => {
+                        const itemsByCategory = {
+                          main: menu.items?.filter(i => i.category === 'main') || [],
+                          appetizer: menu.items?.filter(i => i.category === 'appetizer' || i.category === 'starter') || [],
+                          dessert: menu.items?.filter(i => i.category === 'dessert') || [],
+                          beverage: menu.items?.filter(i => i.category === 'beverage') || []
+                        };
+
+                        return (
+                          <div key={menu._id} className="bg-gray-50 rounded-[2.5rem] p-8 border border-gray-100">
+                            <h4 className="text-2xl font-black text-gray-900 mb-8 pb-4 border-b border-gray-200">{menu.name}</h4>
+                            
+                            <div className="space-y-8">
+                              {Object.entries(itemsByCategory).map(([catKey, items]) => {
+                                if (items.length === 0) return null;
+                                const catName = catKey === 'main' ? 'Main Course' : catKey === 'appetizer' ? 'Starter' : catKey === 'dessert' ? 'Dessert' : 'Beverages';
+                                return (
+                                  <div key={catKey}>
+                                    <h5 className="text-sm font-black text-gray-400 uppercase tracking-widest mb-4 ml-2">{catName}</h5>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                                      {items.map(item => {
+                                        const isSelected = !!selectedItems[`${menu._id}-${item._id}`];
+                                        return (
+                                          <div 
+                                            key={item._id} 
+                                            onClick={() => handleToggleItem(menu._id, item._id)}
+                                            className={`p-4 rounded-2xl flex items-center gap-3 cursor-pointer transition-all border-2 ${isSelected ? 'bg-night-blue text-white border-night-blue shadow-md' : 'bg-white text-gray-700 border-transparent hover:border-sand-tan/50'}`}
+                                          >
+                                            <div className={`w-5 h-5 flex-shrink-0 rounded flex items-center justify-center transition-colors ${isSelected ? 'bg-white text-night-blue' : 'bg-gray-100 border border-gray-200 text-transparent'}`}>
+                                              <FaCheck size={10} className={isSelected ? 'opacity-100' : 'opacity-0'} />
+                                            </div>
+                                            <p className={`font-bold text-sm leading-tight ${isSelected ? 'text-white' : 'text-gray-900'}`}>{item.name}</p>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                );
+                              })}
                             </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : <div className="p-12 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 text-center"><p className="text-gray-400 font-bold italic">Menu system is not available for this venue</p></div>}
-              </section>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : <div className="p-12 bg-gray-50 rounded-[2.5rem] border-2 border-dashed border-gray-200 text-center"><p className="text-gray-400 font-bold italic">Menu system is not available for this venue</p></div>}
+                </section>
+              )}
             </div>
 
             <div className="p-8 sm:p-12 border-t border-gray-100 bg-white flex flex-col sm:flex-row justify-between items-center gap-6">
                <div className="text-center sm:text-left">
                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Added Selection Total</p>
-                 <p className="text-3xl font-black text-purple-800">₹{menuTotal + packagePrice}</p>
+                 <p className="text-3xl font-black text-night-blue">₹{menuTotal + packagePrice}</p>
                </div>
-               <button onClick={() => setShowMenuModal(false)} className="w-full sm:w-auto px-12 py-5 bg-purple-800 text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-purple-900 transition transform hover:-translate-y-1">Confirm Selection</button>
+               <button onClick={() => setShowMenuModal(false)} className="w-full sm:w-auto px-12 py-5 bg-night-blue text-white rounded-3xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-night-blue-shadow transition transform hover:-translate-y-1">Confirm Selection</button>
             </div>
           </div>
         </div>

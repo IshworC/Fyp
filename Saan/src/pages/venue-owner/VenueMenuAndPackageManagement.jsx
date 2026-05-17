@@ -504,28 +504,43 @@ function VenueMenuAndPackageManagement() {
                     {/* Menu Items */}
                     <div className="p-6">
                       {menu.items && menu.items.length > 0 ? (
-                        <div className="space-y-4 mb-6">
-                          {menu.items.map(item => (
-                            <div key={item._id} className="bg-gray-50 p-4 rounded-lg flex justify-between items-start hover:shadow transition">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2">
-                                  <h4 className="font-semibold text-gray-900">{item.name}</h4>
-                                  {item.isVegetarian && <span className="text-green-600 text-sm">🌱 Veg</span>}
-                                </div>
-                                {item.description && <p className="text-sm text-gray-600 mt-1">{item.description}</p>}
-                                <div className="mt-2 flex gap-4 text-sm">
-                                  <span className="text-purple-800 font-bold">₹{item.pricePerPlate}/plate</span>
-                                  <span className="text-gray-600 capitalize">{item.category}</span>
+                        <div className="space-y-6 mb-6">
+                          {['main', 'appetizer', 'dessert', 'beverage', 'other'].map(categoryKey => {
+                            const catItems = menu.items.filter(item => item.category === categoryKey || (!item.category && categoryKey === 'other'));
+                            if (catItems.length === 0) return null;
+                            const catName = categoryKey === 'main' ? 'Main Course' : 
+                                            categoryKey === 'appetizer' ? 'Starter' : 
+                                            categoryKey === 'dessert' ? 'Dessert' : 
+                                            categoryKey === 'beverage' ? 'Beverage' : 'Other';
+                            
+                            return (
+                              <div key={categoryKey}>
+                                <h5 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 pl-1 border-b border-gray-100 pb-1">{catName}</h5>
+                                <div className="space-y-3">
+                                  {catItems.map(item => (
+                                    <div key={item._id} className="bg-gray-50 p-4 rounded-lg flex justify-between items-start hover:shadow transition border border-gray-100">
+                                      <div className="flex-1">
+                                        <div className="flex items-center gap-2">
+                                          <h4 className="font-semibold text-gray-900">{item.name}</h4>
+                                          {item.isVegetarian && <span className="text-green-600 text-xs font-bold bg-green-100 px-2 py-0.5 rounded-full">🌱 Veg</span>}
+                                        </div>
+                                        {item.description && <p className="text-sm text-gray-600 mt-1">{item.description}</p>}
+                                        <div className="mt-2 flex gap-4 text-sm">
+                                          <span className="text-purple-800 font-bold">₹{item.pricePerPlate}/plate</span>
+                                        </div>
+                                      </div>
+                                      <button
+                                        onClick={() => handleDeleteMenuItem(menu._id, item._id)}
+                                        className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition ml-4"
+                                      >
+                                        <FaTrash size={16} />
+                                      </button>
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
-                              <button
-                                onClick={() => handleDeleteMenuItem(menu._id, item._id)}
-                                className="text-red-600 hover:text-red-800 p-2 hover:bg-red-50 rounded-lg transition ml-4"
-                              >
-                                <FaTrash size={16} />
-                              </button>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       ) : (
                         <p className="text-gray-500 mb-6">No items in this menu yet.</p>
@@ -566,7 +581,7 @@ function VenueMenuAndPackageManagement() {
                               className="px-3 py-2 border rounded text-sm focus:outline-none focus:border-purple-800"
                             >
                               <option value="main">Main Course</option>
-                              <option value="starter">Starter</option>
+                              <option value="appetizer">Starter</option>
                               <option value="dessert">Dessert</option>
                               <option value="beverage">Beverage</option>
                             </select>
